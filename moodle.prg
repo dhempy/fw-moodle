@@ -130,18 +130,17 @@ define class MBZ	as custom
 		do case 
 			case empty(m.top_qz_limit)
 				m.top_qz_limit = 'top 10' 
+				this.Log ("Only exporting the first " + m.top_qz_limit + " quizzes.  Add ?limit=99 or ?limit=none to export more. ")
 					
 			case m.top_qz_limit = 'none'
 				m.top_qz_limit = '' 
+				this.Log ("Exporting all quizzes ")
 			
 			otherwise
 				m.top_qz_limit = 'top ' + str(val(m.top_qz_limit))
+				this.Log ("Only exporting the first " + m.top_qz_limit + " quizzes.  Add <b>?limit=99</b> or <b>?limit=none</b> to export more. ")
 				
 		endcase 
-		
-		
-
-		* request.q
 
 
 		select &top_qz_limit qz.quizid, qz.title ;
