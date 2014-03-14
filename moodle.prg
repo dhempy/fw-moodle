@@ -126,9 +126,22 @@ define class MBZ	as custom
 
 
 
-		m.top_limit = ''
-		m.top_limit = 'top 20' 
-		m.top_qz_limit = 'top 20' 
+		m.top_qz_limit = Request.QueryString('limit')
+		do case 
+			case empty(m.top_qz_limit)
+				m.top_qz_limit = 'top 10' 
+					
+			case m.top_qz_limit = 'none'
+				m.top_qz_limit = '' 
+			
+			otherwise
+				m.top_qz_limit = 'top ' + str(val(m.top_qz_limit))
+				
+		endcase 
+		
+		
+
+		* request.q
 
 
 		select &top_qz_limit qz.quizid, qz.title ;
