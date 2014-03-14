@@ -1,0 +1,35 @@
+
+<!-- question: <%= qques.id %>  -->
+  <question type="shortanswer">
+    <name>
+      <text><%= qques.questionid %></text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<%= qques.qs_text %>]]></text>
+    </questiontext>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <usecase>0</usecase>
+    <correctfeedback format="html">
+      <text><![CDATA[<p><%= qques.yup %></p>]]></text>
+    </correctfeedback>
+    <partiallycorrectfeedback format="html">
+      <text><![CDATA[<p><%= qques.nope %></p>]]></text>
+    </partiallycorrectfeedback>
+    <incorrectfeedback format="html">
+      <text><![CDATA[<p><%= qques.nope %></p>]]></text>
+    </incorrectfeedback>
+    
+<%= mbz.answer_list %>
+		    
+
+    
+    <tags>
+      <tag><text><%= qques.questionid %></text></tag>
+      <tag><text><%= qsect.sectionid %></text> </tag>
+      <tag><text><%= qz.quizid %></text> </tag>
+      <tag><text><%= qques.id %></text></tag>
+    </tags>
+    
+  </question>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+<!-- question: 0  -->
+  <question type="category">
+    <category>
+        <text>$cat1$/Default for DL</text>
+
+    </category>
+  </question>
+
+<!-- question: 6731  -->
+  <question type="matching">
+    <name>
+      <text>Matching Sample</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<p>Choose the matching pairs</p>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text><![CDATA[<p>General feedback here, such as "mammals have hair / fish swim"</p>]]></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.3333333</penalty>
+    <hidden>0</hidden>
+    <shuffleanswers>true</shuffleanswers>
+    <correctfeedback format="html">
+      <text><![CDATA[<p>Your answer is correct.</p>]]></text>
+    </correctfeedback>
+    <partiallycorrectfeedback format="html">
+      <text><![CDATA[<p>Your answer is partially correct.</p>]]></text>
+    </partiallycorrectfeedback>
+    <incorrectfeedback format="html">
+      <text><![CDATA[<p>Your answer is incorrect.</p>]]></text>
+    </incorrectfeedback>
+    <shownumcorrect/>
+    <subquestion format="html">
+      <text><![CDATA[<p>Dog</p>]]></text>
+      <answer>
+        <text>Mammal</text>
+      </answer>
+    </subquestion>
+    <subquestion format="html">
+      <text><![CDATA[<p>Large mouth bass</p>]]></text>
+      <answer>
+        <text>fish</text>
+      </answer>
+    </subquestion>
+    <subquestion format="html">
+      <text><![CDATA[<p>Canary</p>]]></text>
+      <answer>
+        <text>bird</text>
+      </answer>
+    </subquestion>
+    <subquestion format="html">
+      <text></text>
+      <answer>
+        <text>zombie</text>
+      </answer>
+    </subquestion>
+    <tags>
+      <tag><text>sample_tag</text>
+</tag>
+    </tags>
+  </question>
+
+</quiz>

@@ -1,0 +1,39 @@
+[Thu 06 Jun 2013 03:29:49 PM GMT] [info] instantiating backup controller e71c1605cace123d95cf43ca65ce1522
+[Thu 06 Jun 2013 03:29:49 PM GMT] [debug] setting controller status to 100
+[Thu 06 Jun 2013 03:29:49 PM GMT] [debug] loading controller plan
+[Thu 06 Jun 2013 03:29:49 PM GMT] [debug] setting controller status to 300
+[Thu 06 Jun 2013 03:29:49 PM GMT] [debug] applying plan defaults
+[Thu 06 Jun 2013 03:29:49 PM GMT] [debug] setting controller status to 400
+[Thu 06 Jun 2013 03:29:49 PM GMT] [info] checking plan security
+[Thu 06 Jun 2013 03:29:49 PM GMT] [debug] setting controller status to 500
+[Thu 06 Jun 2013 03:29:49 PM GMT] [info] checking plan security
+[Thu 06 Jun 2013 03:29:49 PM GMT] [info] checking plan security
+[Thu 06 Jun 2013 03:29:49 PM GMT] [info] checking plan security
+[Thu 06 Jun 2013 03:29:49 PM GMT] [debug] saving controller to db
+[Thu 06 Jun 2013 03:29:49 PM GMT] [debug] calculating controller checksum 3498c11592efdcafafb8e0a6a74a6629
+[Thu 06 Jun 2013 03:29:57 PM GMT] [debug] loading controller from db
+[Thu 06 Jun 2013 03:29:57 PM GMT] [info] checking plan security
+[Thu 06 Jun 2013 03:29:57 PM GMT] [info] checking plan security
+[Thu 06 Jun 2013 03:29:57 PM GMT] [info] checking plan security
+[Thu 06 Jun 2013 03:29:57 PM GMT] [debug] saving controller to db
+[Thu 06 Jun 2013 03:29:57 PM GMT] [debug] calculating controller checksum ceb90c231d9058b7e1324f241d904fa3
+[Thu 06 Jun 2013 03:30:01 PM GMT] [debug] loading controller from db
+[Thu 06 Jun 2013 03:30:01 PM GMT] [info] checking plan security
+[Thu 06 Jun 2013 03:30:01 PM GMT] [info] checking plan security
+[Thu 06 Jun 2013 03:30:01 PM GMT] [info] checking plan security
+[Thu 06 Jun 2013 03:30:01 PM GMT] [debug] saving controller to db
+[Thu 06 Jun 2013 03:30:01 PM GMT] [debug] calculating controller checksum ceb90c231d9058b7e1324f241d904fa3
+[Thu 06 Jun 2013 03:30:19 PM GMT] [debug] loading controller from db
+[Thu 06 Jun 2013 03:30:19 PM GMT] [info] checking plan security
+[Thu 06 Jun 2013 03:30:19 PM GMT] [info] checking plan security
+[Thu 06 Jun 2013 03:30:19 PM GMT] [info] checking plan security
+[Thu 06 Jun 2013 03:30:19 PM GMT] [debug] saving controller to db
+[Thu 06 Jun 2013 03:30:19 PM GMT] [debug] calculating controller checksum c002a56095778bbe58751eeb1e59e660
+[Thu 06 Jun 2013 03:30:32 PM GMT] [debug] loading controller from db
+[Thu 06 Jun 2013 03:30:32 PM GMT] [info] checking plan security
+[Thu 06 Jun 2013 03:30:32 PM GMT] [info] checking plan security
+[Thu 06 Jun 2013 03:30:32 PM GMT] [debug] setting controller status to 700
+[Thu 06 Jun 2013 03:30:32 PM GMT] [debug] saving controller to db
+[Thu 06 Jun 2013 03:30:32 PM GMT] [debug] calculating controller checksum 35fc695b2c3b55be95cfcaf718346922
+[Thu 06 Jun 2013 03:30:32 PM GMT] [debug] loading controller from db
+[Thu 06 Jun 2013 03:30:32 PM GMT] [debug] setting controller status to 800

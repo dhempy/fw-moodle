@@ -1,0 +1,15 @@
+<!-- ================= START OF SECTION ================= -->
+
+<!-- question: 0  -->
+  <question type="category">
+    <category>
+      <text><%= mbz.export_title %>/<%= left(qz.quizid,4) %>/<%= qz.quizid + ' | ' + strtran(trim(qz.title), '/', '-') %>/<%= qsect.sectionid + ' | ' + strtran(trim(qsect.s_title), '/', '-') %></text>
+
+    </category>
+  </question>
+
+	<%= mbz.question_list %>
+	
+	
+<!-- =================  END OF SECTION  ================= -->	
+

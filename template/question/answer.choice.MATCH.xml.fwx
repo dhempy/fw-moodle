@@ -1,0 +1,8 @@
+<!-- answer.xml.MATCH.fwx | keyid:<%= q_choice.choiceid %> -->
+    <subquestion format="html">
+      <text><![CDATA[<p><%= qques.qs_text %></p>]]></text>
+      <answer>
+	      <text><%= q_choice.ch_text %></text>
+	    </answer>
+    </subquestion>
+

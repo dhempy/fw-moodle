@@ -1,0 +1,4 @@
+<!-- answer.xml.ESSAY.fwx | keyid:<%= q_choice.choiceid %> -->
+    <graderinfo format="html">
+      <text><![CDATA[<%= q_choice.ch_text %>]]></text>
+    </graderinfo>

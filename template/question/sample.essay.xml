@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+<!-- question: 0  -->
+  <question type="category">
+    <category>
+        <text>$course$/AAA Question Type Samples For Export From Moodle</text>
+
+    </category>
+  </question>
+
+<!-- question: 7140  -->
+  <question type="essay">
+    <name>
+      <text>Sample Essay</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<p>Why is the sky blue?</p>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text><![CDATA[<p>Did you discuss refraction?  And Smurfs(R)?</p>]]></text>
+    </generalfeedback>
+    <defaultgrade>10.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <responseformat>editor</responseformat>
+    <responsefieldlines>15</responsefieldlines>
+    <attachments>0</attachments>
+    <graderinfo format="html">
+      <text><![CDATA[<p>Need info on refraction and curvature.</p>]]></text>
+    </graderinfo>
+    <responsetemplate format="html">
+      <text></text>
+    </responsetemplate>
+  </question>
+
+<!-- question: 7141  -->
+  <question type="shortanswer">
+    <name>
+      <text>Sample Short Answer</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<p>What is the airspeed of an unladen African Swallow?</p>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.3333333</penalty>
+    <hidden>0</hidden>
+    <usecase>0</usecase>
+    <answer fraction="100" format="moodle_auto_format">
+      <text>I don't know</text>
+      <feedback format="html">
+        <text><![CDATA[<p>Boing!</p>]]></text>
+      </feedback>
+    </answer>
+  </question>
+
+</quiz>

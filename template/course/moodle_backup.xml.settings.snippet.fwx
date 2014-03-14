@@ -1,0 +1,17 @@
+
+    <settings_ORIGINAL>
+
+      <setting>
+        <level>activity</level>
+        <activity>forum_628</activity>
+        <name>forum_628_included</name>
+        <value>1</value>
+      </setting>
+      <setting>
+        <level>activity</level>
+        <activity>forum_628</activity>
+        <name>forum_628_userinfo</name>
+        <value>0</value>
+      </setting>
+
+    </settings_ORIGINAL>

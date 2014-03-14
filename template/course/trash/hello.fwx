@@ -1,0 +1,4 @@
+
+      ================ SECTION LIST START ============= <br />
+      <%= mbz.section_list %>
+      ================ SECTION LIST END ============= <br />

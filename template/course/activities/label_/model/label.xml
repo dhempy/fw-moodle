@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<activity id="150" moduleid="424" modulename="label" contextid="732">
+  <label id="150">
+    <name> Ressourcen</name>
+    <intro>&lt;h3&gt;&lt;strong&gt;&lt;span id="result_box" class="short_text" lang="de"&gt;&lt;span class="hps"&gt;&lt;span id="result_box" class="short_text" lang="de"&gt;&lt;span class="hps"&gt;&lt;img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABEAAAARCAIAAAC0D9CtAAAAQklEQVQokWNgwAD/CQFMLYR14tSDRxs+Pbi0oYuSowdNG7F6kLVRVQ+BcMDwIQOm2QTDkEC4YXUh9cIAPyBLzyAGANCwzEJqUjsQAAAAAElFTkSuQmCC" alt="" /&gt; Ressourcen&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/strong&gt;&lt;/h3&gt;</intro>
+    <introformat>1</introformat>
+    <timemodified>1366741493</timemodified>
+  </label>
+</activity>

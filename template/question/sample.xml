@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+<!-- question: 0  -->
+  <question type="category">
+    <category>
+        <text>$course$/Quiz Category Title Goes Here</text>
+    </category>
+  </question>
+
+<!-- question: 35132  -->
+  <question type="multichoice">
+    <name>
+      <text>SQZA001A01</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<p>What is the sum of three and five?</p>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text><![CDATA[<p>Three plus five is eight. </p>]]></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <single>true</single>
+    <shuffleanswers>false</shuffleanswers>
+    <answernumbering>ABCD</answernumbering>
+    <correctfeedback format="html">
+      <text><![CDATA[<p>Your answer is correct.</p>]]></text>
+    </correctfeedback>
+    <partiallycorrectfeedback format="html">
+      <text><![CDATA[<p>Your answer is partially correct.</p>]]></text>
+    </partiallycorrectfeedback>
+    <incorrectfeedback format="html">
+      <text><![CDATA[<p>Your answer is incorrect.</p>]]></text>
+    </incorrectfeedback>
+    <shownumcorrect/>
+    <answer fraction="0" format="html">
+      <text><![CDATA[<p>Two</p>]]></text>
+      <feedback format="html">
+        <text><![CDATA[<p>No - Perhaps you subtracted three from five?</p>]]></text>
+      </feedback>
+    </answer>
+    <answer fraction="100" format="html">
+      <text><![CDATA[<p>Eight</p>]]></text>
+      <feedback format="html">
+        <text><![CDATA[<p>Correct!</p>]]></text>
+      </feedback>
+    </answer>
+    <answer fraction="0" format="html">
+      <text><![CDATA[<p>Fifteen</p>]]></text>
+      <feedback format="html">
+        <text><![CDATA[<p>No - Did you *multiply* three and five instead?</p>]]></text>
+      </feedback>
+    </answer>
+  </question>
+
+<!-- question: 35133  -->
+  <question type="multichoice">
+    <name>
+      <text>SQZA001A02</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<p>What is four squared?</p>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text><![CDATA[<p>Four time four is sixteen</p>]]></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <hidden>0</hidden>
+    <single>true</single>
+    <shuffleanswers>true</shuffleanswers>
+    <answernumbering>abc</answernumbering>
+    <correctfeedback format="html">
+      <text><![CDATA[<p>Your answer is correct.</p>]]></text>
+    </correctfeedback>
+    <partiallycorrectfeedback format="html">
+      <text><![CDATA[<p>Your answer is partially correct.</p>]]></text>
+    </partiallycorrectfeedback>
+    <incorrectfeedback format="html">
+      <text><![CDATA[<p>Your answer is incorrect.</p>]]></text>
+    </incorrectfeedback>
+    <shownumcorrect/>
+    <answer fraction="0" format="html">
+      <text><![CDATA[<p>Four</p>]]></text>
+      <feedback format="html">
+        <text><![CDATA[<p>nope - try again</p>]]></text>
+      </feedback>
+    </answer>
+    <answer fraction="100" format="html">
+      <text><![CDATA[<p>Sixteen</p>]]></text>
+      <feedback format="html">
+        <text><![CDATA[<p>Right!</p>]]></text>
+      </feedback>
+    </answer>
+    <answer fraction="0" format="html">
+      <text><![CDATA[<p>Eight</p>]]></text>
+      <feedback format="html">
+        <text><![CDATA[<p>No - you probably ADDED four and four, not multiplied.</p>]]></text>
+      </feedback>
+    </answer>
+  </question>
+
+<!-- question: 35134  -->
+  <question type="shortanswer">
+    <name>
+      <text>SQZA001A03</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<p>What color is the sky?</p>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text><![CDATA[<p>There are many correct answers.  In fact, there may be no incorrect answers to this question.  However, "Blue" is the safest answer.</p>]]></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>1.0000000</penalty>
+    <hidden>0</hidden>
+    <usecase>0</usecase>
+    <answer fraction="100" format="moodle_auto_format">
+      <text>blue</text>
+      <feedback format="html">
+        <text><![CDATA[<p>Yes!  The sky is often blue.</p>]]></text>
+      </feedback>
+    </answer>
+    <answer fraction="90" format="moodle_auto_format">
+      <text>black</text>
+      <feedback format="html">
+        <text><![CDATA[<p>Rarely completely black due to stars and ambient light, the night sky often appears black</p>]]></text>
+      </feedback>
+    </answer>
+    <answer fraction="0" format="moodle_auto_format">
+      <text>yellow</text>
+      <feedback format="html">
+        <text><![CDATA[<p>While there could be traces of yellow at sunrise, sunset or in other events, yellow is not a common color in the sky.</p>]]></text>
+      </feedback>
+    </answer>
+    <tags>
+      <tag><text>Tag001 Tag002</text>
+</tag>
+    </tags>
+  </question>
+
+</quiz>
