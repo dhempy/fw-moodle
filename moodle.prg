@@ -145,7 +145,7 @@ define class MBZ	as custom
 			this.Log ("Export questions for quiz " + qz.quizid + " at " + ttoc(datetime()) )
 			m.qzcount = m.qzcount + 1
 
-			select &top_limit qsect.* ;
+			select qsect.* ;
 				from dl!qsections qsect ;
 				where qsect.sectionid = qz.quizid ;
 				order by sectionid ;
@@ -200,7 +200,7 @@ define class MBZ	as custom
 				this.answer_list = ''
 				this.questionid =  ''
 		
-				select &top_limit qques.* ;
+				select qques.* ;
 					from dl!qquestions qques ;
 					where qques.questionid = qsect.sectionid ;
 					order by questionid ;
@@ -237,7 +237,7 @@ define class MBZ	as custom
 				
 					if (qsect.s_type = 'TEXT') 
 						&& Collect answers in qkey:					
-						select &top_limit qkey.* ;
+						select qkey.* ;
 							from dl!qkey ;
 							where qkey.keyid = qques.questionid ;
 							order by keyid ;
@@ -655,12 +655,13 @@ define class MBZ	as custom
 			&& This doesn't actually pan out.  Given this needs to run once ever, I'm not going to figure out how to do this.
 			&& Just do the following manually.
 			
-			return
-			return
-			return
+			&& We'll try this - put ?init_db=1 in the URL to initialize the database.  Good luck.
+			if empty(Request.QueryString('init_db'))
+				return
+			endif
+			
 
 		TRY
-			open database \db\dl exclusive			
 			use dl!qquestions exclusive again
 			
 			ALTER table dl!qquestions ADD COLUMN id int AUTOINC NEXTVALUE 200000 DEFAULT RECNO()+100000
@@ -674,8 +675,11 @@ define class MBZ	as custom
 	
 			
 	*		try                       
-				use dl!lessons exclusive
-				Alter Table lessons add column lesson_id i
+				close all
+				open database \db\dl exclusive			
+				use dl!lessons exclusive again 
+				
+				Alter Table dl!lessons add column lesson_id i
 				this.Log("Adding lesson_id field to lessons_table ")
 				Replace ALL lesson_id with Recno()+1000
 				
