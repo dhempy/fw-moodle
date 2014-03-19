@@ -2,7 +2,7 @@
     <subquestion format="html">
       <text><![CDATA[<p><%= qques.qs_text %></p>]]></text>
       <answer>
-	      <text><%= q_choice.ch_text %></text>
+        <text><![CDATA[<%= q_choice.ch_text %>]]></text>
 	    </answer>
     </subquestion>
 

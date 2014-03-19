@@ -1,6 +1,6 @@
 <!-- answer.xml.fwx | keyid:<%= q_choice.choiceid %> -->
     <answer fraction="<%= iif( q_choice.choiceid = qques.questionid + qques.correct, '100', '0'  )  %>" format="moodle_auto_format">
-      <text><%= q_choice.ch_text %></text>
+      <text><![CDATA[<%= q_choice.ch_text %>]]></text>
       <feedback format="html">
         <text><![CDATA[<%= iif( q_choice.choiceid = qques.questionid + qques.correct, qques.yup,  qques.nope  ) %>]]></text>
       </feedback>
