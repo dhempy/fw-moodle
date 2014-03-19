@@ -228,7 +228,7 @@ define class MBZ	as custom
 					m.key_count = 0
 						
 					
-					this.Log ("<h3>Export question " + qques.questionid + " (" + qsect.s_type + ") " + qques.qs_text + '</h3>' )
+					this.Log ("Export question " + qques.questionid + " (" + qsect.s_type + ") " + qques.qs_text )
 					m.qscount = m.qscount + 1
 					
 					if (qsect.s_type != 'MATCH')
@@ -248,7 +248,7 @@ define class MBZ	as custom
 								+ iif( qsect.s_type = 'MATCH', '.MATCH', '' )  ;
 								+ iif( qsect.s_type = 'ESSAY', '.ESSAY', '' )  ;
 								+ '.xml')
-						m.choice_count = m.choice_count = 1
+						m.choice_count = m.choice_count + 1
 					endscan
 					
 				
@@ -263,16 +263,16 @@ define class MBZ	as custom
 						scan 
 							&& this.Log("Key " + q_key.keyid + ": " + q_key.k_text)
 							this.answer_list = this.answer_list + this.MakeFile('', '', 'answer.key.xml')
-							m.key_count = m.key_count = 1
+							m.key_count = m.key_count + 1
 						endscan
 				
 					endif
 
- 				  this.Log ("Question " + str(q_count) + " of  " + str(q_rows) + " in section " + qsect.sectionid  )		
+ 				  &&this.Log ("Question " + str(q_count) + " of  " + str(q_rows) + " in section " + qsect.sectionid  )		
 
 					if (qsect.s_type != 'MATCH'  or (q_count = q_rows) )		&& Only fill matching templates on the last question of the section.
 						this.ExportQuestion()	&& combines question data with this.answer_list from keys and choices.
-						this.Log("Exported " + alltrim(str(m.choice_count)) + " choices and " + alltrim(str(m.key_count)) + " keys")
+						this.Log(" + " + alltrim(str(m.choice_count)) + " answers, " + alltrim(str(m.key_count)) + " keys")
 						this.answer_list = ''
 					else 
 						if empty(this.questionid)
@@ -383,7 +383,7 @@ define class MBZ	as custom
 		m.bytes = alltrim(str(len(m.output)))
 
 		if (empty(m.dest_fname)) 		
-			this.Log("Fulfilled <tt>&src_fname</tt> to memory -- &bytes bytes" )
+			&& this.Log("Fulfilled <tt>&src_fname</tt> to memory -- &bytes bytes" )
 		
 		else 
 			&& strconv(...,9)  Converts to UTF-8 -- Only do this for file writes!  If you do it for returned content, that later gets converted again by MakeFile(to disk), it gets corrupted.
