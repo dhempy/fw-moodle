@@ -115,7 +115,7 @@ define class MBZ	as custom
       
 		this.SetFolders('question') 
 
-		this.Log(	"ExportQuestions starting for " + this.courseid + ": " + trim(thiscrs.coursename) + " to folder [" + this.backup_folder + "]" )
+		this.Log(	"ExportQuestions(" + this.courseid + "): " + trim(thiscrs.coursename) + " to folder [" + this.backup_folder + "]" )
 
 		&& Preserve output buffer and state...we'll be stomping all over the output buffer.
 		local m.existing_content, m.old_buffer_state
@@ -183,7 +183,8 @@ define class MBZ	as custom
 		this.MakeFile( this.courseid +"_questions.xml", .F., "questions.xml")
 
 
-		this.Log('<div class="warning">TO DO: Develop the ESSAY templates.</div>')
+		this.Log('<div class="warning">TO DO: Write each quiz to disk, then batch into separate files (maybe X quizzes/file or Y bytes/file?)</div>')
+		this.Log('<div class="warning">TO DO: Experiment with response.flush() or similar to get around output size limitation and improve responsiveness?</div>')
 		this.Log('<div class="warning">TO DO: Create quizzes to contain the questions.  (Maybe a separate script?) </div>')
 
 
@@ -223,6 +224,9 @@ define class MBZ	as custom
 				
 				scan     && questions in section
 					q_count = q_count + 1
+					m.choice_count = 0
+					m.key_count = 0
+						
 					
 					this.Log ("<h3>Export question " + qques.questionid + " (" + qsect.s_type + ") " + qques.qs_text + '</h3>' )
 					m.qscount = m.qscount + 1
@@ -239,11 +243,12 @@ define class MBZ	as custom
 						into cursor q_choice
 						
 					scan 
-						this.Log("Exporting answer choice " + q_choice.choiceid + ": " + q_choice.ch_text)
+						&& this.Log("Choice " + q_choice.choiceid + ": " + q_choice.ch_text)
 						this.answer_list = this.answer_list + this.MakeFile('', '', 'answer.choice'   ;
 								+ iif( qsect.s_type = 'MATCH', '.MATCH', '' )  ;
 								+ iif( qsect.s_type = 'ESSAY', '.ESSAY', '' )  ;
 								+ '.xml')
+						m.choice_count = m.choice_count = 1
 					endscan
 					
 				
@@ -256,8 +261,9 @@ define class MBZ	as custom
 							into cursor q_key
 							
 						scan 
-							this.Log("Exporting answer key " + q_key.keyid + ": " + q_key.k_text)
+							&& this.Log("Key " + q_key.keyid + ": " + q_key.k_text)
 							this.answer_list = this.answer_list + this.MakeFile('', '', 'answer.key.xml')
+							m.key_count = m.key_count = 1
 						endscan
 				
 					endif
@@ -266,6 +272,7 @@ define class MBZ	as custom
 
 					if (qsect.s_type != 'MATCH'  or (q_count = q_rows) )		&& Only fill matching templates on the last question of the section.
 						this.ExportQuestion()	&& combines question data with this.answer_list from keys and choices.
+						this.Log("Exported " + alltrim(str(m.choice_count)) + " choices and " + alltrim(str(m.key_count)) + " keys")
 						this.answer_list = ''
 					else 
 						if empty(this.questionid)
@@ -273,7 +280,6 @@ define class MBZ	as custom
 						endif
 					endif
 				
-					
 				
 				endscan  && questions in section
 
