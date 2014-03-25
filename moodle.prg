@@ -142,10 +142,24 @@ define class MBZ	as custom
 				
 		endcase 
 
+		m.quiz_first = Request.QueryString('quiz_first')
+		m.quiz_last  = Request.QueryString('quiz_last')
+
+		m.where_clause  = ' quizid = ' + this.courseid ;
+		do case 
+			case not empty (m.quiz_first) and not empty (m.quiz_last)
+				m.where_clause = m.where_clause + ' quizid between m.quiz_first and m.quiz_last '
+				
+			case not empty (m.quiz_first) 
+				m.where_clause = m.where_clause + ' quizid > m.quiz_first '
+
+		endif
+
+		this.Log ("Exporting quizzes where &where_clause")
 
 		select &top_qz_limit qz.quizid, qz.title ;
 			from dl!qquizes qz ;
-			where quizid = this.courseid ;
+			where &where_clause ;
 			order by quizid ;
 			into cursor qz
 
