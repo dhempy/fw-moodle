@@ -124,39 +124,38 @@ define class MBZ	as custom
 		m.existing_content = Response.OutputBuffer 
 		Response.Clear
 
-
-
-		m.top_qz_limit = Request.QueryString('limit')
-		do case 
-			case empty(m.top_qz_limit)
-				m.top_qz_limit = 'top 10' 
-				this.Log ("Only exporting the first " + m.top_qz_limit + " quizzes.  Add ?limit=99 or ?limit=none to export more. ")
-					
-			case m.top_qz_limit = 'none'
+		if empty (Request.QueryString('limit'))
 				m.top_qz_limit = '' 
-				this.Log ("Exporting all quizzes ")
-			
-			otherwise
-				m.top_qz_limit = 'top ' + str(val(m.top_qz_limit))
-				this.Log ("Only exporting the first " + m.top_qz_limit + " quizzes.  Add <b>?limit=99</b> or <b>?limit=none</b> to export more. ")
-				
-		endcase 
+		else 
+				m.top_qz_limit = 'top ' + alltrim(str(val(Request.QueryString('limit'))))
+		endif
 
+
+		m.where_clause  = ' quizid = "' + this.courseid  + '" '
+		m.quizid = Request.QueryString('quizid')
 		m.quiz_first = Request.QueryString('quiz_first')
 		m.quiz_last  = Request.QueryString('quiz_last')
 
-		m.where_clause  = ' quizid = ' + this.courseid ;
+		m.filename_part = ''
+
 		do case 
+			case not empty (m.quizid) 
+				m.where_clause = m.where_clause + ' and quizid = "' + m.quizid  + '" '
+				m.filename_part = m.quizid 
+
 			case not empty (m.quiz_first) and not empty (m.quiz_last)
-				m.where_clause = m.where_clause + ' quizid between m.quiz_first and m.quiz_last '
+				m.where_clause = m.where_clause + ' and quizid between "' + m.quiz_first + '" and "' + m.quiz_last + '" '
+				m.filename_part = m.quiz_first + '-' + m.quiz_last  + iif(empty(m.top_qz_limit), '', '+' + strtran(m.top_qz_limit,' ','_'))
 				
-			case not empty (m.quiz_first) 
-				m.where_clause = m.where_clause + ' quizid > m.quiz_first '
+			case not empty (m.quiz_first) and not empty (m.top_qz_limit)
+				m.where_clause = m.where_clause + ' and quizid > "' + m.quiz_first  + '" '
+				m.filename_part = m.quiz_first + '+' + strtran(m.top_qz_limit,' ','_')
 
-		endif
+		endcase
+	
 
-		this.Log ("Exporting quizzes where &where_clause")
-
+		this.Log ([Exporting &top_qz_limit quizzes where &where_clause])
+		
 		select &top_qz_limit qz.quizid, qz.title ;
 			from dl!qquizes qz ;
 			where &where_clause ;
@@ -191,10 +190,14 @@ define class MBZ	as custom
 				
 		endscan && quizzes in course
 		
-		this.Log ("Exported " + alltrim(str(m.qscount)) + " questions for " + alltrim(str(m.qzcount)) + " quizzes ")
 		
 
-		this.MakeFile( this.courseid +"_questions.xml", .F., "questions.xml")
+		m.filename =  strtran("fw_questions_"+ m.filename_part +".xml", ' ', '-')
+		
+		this.Log ("Exported " + alltrim(str(m.qscount)) + " questions for " + alltrim(str(m.qzcount)) + " quizzes to <b>" + m.filename + "</b>")
+
+		&&this.MakeFile( this.courseid +"_questions.xml", .F., "questions.xml")
+		this.MakeFile( m.filename, .F., "questions.xml")
 
 
 		this.Log('<div class="warning">TO DO: Write each quiz to disk, then batch into separate files (maybe X quizzes/file or Y bytes/file?)</div>')
