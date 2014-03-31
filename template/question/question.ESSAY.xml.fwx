@@ -11,7 +11,7 @@
       <text><![CDATA[]]></text>
     </generalfeedback>
 
-    <defaultgrade>1.0000000</defaultgrade>
+    <defaultgrade><%= qques.qs_worth %></defaultgrade>
     <penalty>0.0000000</penalty>
     <hidden>0</hidden>
     <responseformat>editor</responseformat>

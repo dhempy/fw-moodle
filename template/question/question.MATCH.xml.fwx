@@ -7,7 +7,7 @@
     <questiontext format="html">
       <text><![CDATA[<%= qques.qs_text %>]]></text>
     </questiontext>
-    <defaultgrade>1.0000000</defaultgrade>
+    <defaultgrade><%= qques.qs_worth %></defaultgrade>
     <penalty>0.0000000</penalty>
     <hidden>0</hidden>
     <shuffleanswers>true</shuffleanswers>
