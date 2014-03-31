@@ -274,6 +274,7 @@ define class MBZ	as custom
 						select qkey.* ;
 							from dl!qkey ;
 							where qkey.keyid = qques.questionid ;
+							and not empty(qkey.K_text) ;
 							order by keyid desc ;
 							into cursor q_key
 						
