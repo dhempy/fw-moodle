@@ -132,9 +132,9 @@ define class MBZ	as custom
 
 
 		m.where_clause  = ' quizid = "' + this.courseid  + '" '
-		m.quizid = Request.QueryString('quizid')
-		m.quiz_first = Request.QueryString('quiz_first')
-		m.quiz_last  = Request.QueryString('quiz_last')
+		m.quizid     = left(Request.QueryString('quizid'),7)
+		m.quiz_first = left(Request.QueryString('quiz_first'),7)
+		m.quiz_last  = left(Request.QueryString('quiz_last'),7)
 
 		m.filename_part = ''
 
@@ -211,7 +211,7 @@ define class MBZ	as custom
 		Response.OutputBuffer = m.existing_content
 		
  		Server.AddScriptTimeout(10, .T.)		
-		return
+		return m.qscount
 		
 	endproc
 
