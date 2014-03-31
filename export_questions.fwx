@@ -43,7 +43,7 @@
 				<dd>
 					<input name="quizid" value="<%= Request.QueryString('quizid') %>" size="8" maxlength="7" /> 
 					<br />
-					<em>e.g. <%=m.courseid%>034</em>
+					<em>e.g. <%=m.courseid%>034</em>  Alternately, find it in Quiz Shop and export from there.
 				</dd>
 
 				<dt>
@@ -69,6 +69,13 @@
 				<dt>
 					<input type="submit" name="do" value="Export Questions" />
 				</dt>
+				<dd>
+					The export can take a long time. Figure about 50 quizzes per minute. Exporting more than 50-100 quizzes
+					at once may run into a "file too large" error, so cosider exporting your files in chunks. 
+					Importing these files into Moodle takes *much* longer, perhaps one quiz per minute, so plan
+					accordingly.
+				</dd>
+
 
 			</dl>
 			

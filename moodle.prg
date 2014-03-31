@@ -276,14 +276,25 @@ define class MBZ	as custom
 							where qkey.keyid = qques.questionid ;
 							order by keyid ;
 							into cursor q_key
-							
+						
+&& Create array
+						m.key_text_list = ''
+						
 						scan 
 							&& this.Log("Key " + q_key.keyid + ": " + q_key.k_text)
-							this.answer_list = this.answer_list + this.MakeFile('', '', 'answer.key.xml')
-							m.key_count = m.key_count + 1
+							if (0 < at('~!' + q_key.K_text + '!~ ' , m.key_text_list ))
+								this.Log("Skipping duplicate key " + q_key.keyid + ": " + q_key.k_text)
+							else
+								m.key_text_list = m.key_text_list + '~!' + q_key.K_text + '!~ '
+								this.answer_list = this.answer_list + this.MakeFile('', '', 'answer.key.xml')
+	&& Add key to array, overwriting prev. entries							
+								m.key_count = m.key_count + 1
+							endif
 						endscan
 				
 					endif
+
+&& Loop through array adding items to answer_list
 
  				  &&this.Log ("Question " + str(q_count) + " of  " + str(q_rows) + " in section " + qsect.sectionid  )		
 
