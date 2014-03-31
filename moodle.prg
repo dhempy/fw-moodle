@@ -263,6 +263,13 @@ define class MBZ	as custom
 						
 					scan 
 						&& this.Log("Choice " + q_choice.choiceid + ": " + q_choice.ch_text)
+					 	if ( (left(q_choice.ch_text, 1) = '"' ) and (right(q_choice.ch_text, 1) = '"' ) )
+					 		this.Log("CASE SENSITVE ANSWER: " + q_choice.choiceid + ": " + q_choice.ch_text)
+					 		&& Then this is an exact-match response.  Both case, punctuation, and spacing must be exact. 
+					 		&& documentation: http://www.dl.ket.org/intranet/faq/qz_grade.htm#correct 
+					 		this.case_sensitive = 1
+					 	endif
+
 						this.answer_list = this.answer_list + this.MakeFile('', '', 'answer.choice'   ;
 								+ iif( qsect.s_type = 'MATCH', '.MATCH', '' )  ;
 								+ iif( qsect.s_type = 'ESSAY', '.ESSAY', '' )  ;
