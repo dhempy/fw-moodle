@@ -1,6 +1,6 @@
 <!-- ans.MATCH keyid:<%= q_choice.choiceid %> -->
 <subquestion format="html">
-	<text><![CDATA[<p><%= qques.qs_text %></p>]]></text>
+	<text><% if (qques.qs_text != 'extra') %><![CDATA[<p><%= qques.qs_text %></p>]]><% endif %></text>
 	<answer>
 	<text><![CDATA[<%= q_choice.ch_text %>]]></text>
 	</answer>

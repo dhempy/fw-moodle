@@ -256,6 +256,7 @@ define class MBZ	as custom
 						this.answer_list = ''		&& These build through the entire section, and must be retained until the end of the section.
 					else 
 						this.section_points = this.section_points + qques.qs_worth 	&& This is only relevant for Matching questions.
+						&& This depends on "extra" options having zero points -- which is what FoxWeb forces. 
 					endif
 				
 					&& Collect answers in qchoices:					
