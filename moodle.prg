@@ -272,7 +272,7 @@ define class MBZ	as custom
 					if (qsect.s_type = 'TEXT') 
 						&& Collect answers in qkey:					
 						select qkey.* ;
-							from dl!qkey ;
+							from dl!qkey desc ;
 							where qkey.keyid = qques.questionid ;
 							order by keyid ;
 							into cursor q_key
