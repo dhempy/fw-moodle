@@ -282,9 +282,9 @@ define class MBZ	as custom
 						
 						scan 
 							&& this.Log("Key " + q_key.keyid + ": " + q_key.k_text)
-							m.marker = '~!' + alltrim(q_key.K_text) + '!~'
+							m.marker = '~{' + lower(alltrim(q_key.K_text)) + '}~'
 							if (0 < at(m.marker , m.key_text_list ))
-								this.Log("Skipping duplicate key " + q_key.keyid + ": " + q_key.k_text + " from " + m.key_text_list )
+								this.Log("Skipping duplicate key " + q_key.keyid + ": {" + q_key.k_text + "}  >>> Existing keys: " + m.key_text_list )
 							else
 								m.key_text_list = m.key_text_list + m.marker + ' '
 								this.answer_list = this.answer_list + this.MakeFile('', '', 'answer.key.xml')
