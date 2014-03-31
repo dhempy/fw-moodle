@@ -32,6 +32,7 @@ define class MBZ	as custom
 	template_folder = ''	
 	current_activity_id = 999
 	question_list = ''
+	section_points = 0 && only relevant to matching sections
 	answer_list = ''
 	case_sensitive = 0	&& Can vary per question.
 	questionid =  ''	&& only used for MATCH questions, where question cursor is gone by the time questionid is needed in template.
@@ -230,6 +231,7 @@ define class MBZ	as custom
 				this.question_list = ''
 				this.answer_list = ''
 				this.questionid =  ''
+				this.section_points = 0 		&& This is only relevant for Matching questions.
 		
 				select qques.* ;
 					from dl!qquestions qques ;
@@ -252,6 +254,8 @@ define class MBZ	as custom
 					
 					if (qsect.s_type != 'MATCH')
 						this.answer_list = ''		&& These build through the entire section, and must be retained until the end of the section.
+					else 
+						this.section_points = this.section_points + qques.qs_worth 	&& This is only relevant for Matching questions.
 					endif
 				
 					&& Collect answers in qchoices:					
@@ -274,6 +278,7 @@ define class MBZ	as custom
 								+ iif( qsect.s_type = 'MATCH', '.MATCH', '' )  ;
 								+ iif( qsect.s_type = 'ESSAY', '.ESSAY', '' )  ;
 								+ '.xml')
+						
 						m.choice_count = m.choice_count + 1
 					endscan
 					
