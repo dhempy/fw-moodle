@@ -1,0 +1,86 @@
+<%	StaffOnly() %>
+<html>
+<head>
+	<title>Moodle Question Export <%= ThisCrs.courseid %>: <%= ThisCrs.coursename %></title>
+	<%= DocHead %>
+	<link rel="stylesheet" type="text/css" href="/style/intranet.css" />
+	<style type="text/css" media="screen">@import url(/style/default.css);</style>
+	<link rel="stylesheet" type="text/css" media="print" href="/style/default_print.css" />
+</head>
+<body>	
+	<h1>Exporting <%= ThisCrs.courseid %>: <%= ThisCrs.coursename %> Questions</h1>
+
+	
+	
+<%
+  set procedure to \db\moodle\moodle additive
+  
+  m.start_time = datetime()
+  
+	if (lower(Request.QueryString('do')) = 'export questions')
+		mbz = createobject("MBZ")
+		mbz.ExportQuestions()
+%>
+
+	<p> Started at <%= ttoc(m.start_time) %> </p>
+
+	Msgs:
+	<div> 	<%= mbz.msg  %> </div>
+
+	<p> Ending at <%= ttoc(datetime()) %>  after <%= datetime() - m.start_time %> seconds of execution. </p>
+<%
+	endif
+%>
+
+
+		<form method="get" class="box">
+		
+			<dl>
+				
+				<dt>
+					Export a single quiz:  
+				</dt>
+				<dd>
+					<input name="quizid" value="<%= Request.QueryString('quizid') %>" size="8" maxlength="7" /> 
+					<br />
+					<em>e.g. <%=m.courseid%>034</em>
+				</dd>
+
+				<dt>
+					<em>OR</em> Export a Range of Quiz ID's:  
+				</dt>
+				<dd>
+					<input name="quiz_first" value="<%= Request.QueryString('quiz_first') %>" size="8" maxlength="7" /> - 
+					<input name="quiz_last" value="<%= Request.QueryString('quiz_last') %>" size="8" maxlength="7" /> 
+					<br />
+					<em>e.g. <%=m.courseid%>001 - <%=m.courseid%>050 </em>
+				</dd>
+
+				<dt>
+					How many quizzes to export?  
+				</dt>
+				<dd>
+					<input name="limit" value="<%= Request.QueryString('limit') %>" size="4" maxlength="3" />  
+					<br />
+					<em>Leave blank for all</em>
+				</dd>
+
+			
+				<dt>
+					<input type="submit" name="do" value="Export Questions" />
+				</dt>
+
+			</dl>
+			
+		</form>
+	
+
+</body>
+</html>
+
+<%
+	&& This is important, or you can't recompile this file without restarting FoxWeb.
+	release mbz
+	clear class MBZ
+%>
+
