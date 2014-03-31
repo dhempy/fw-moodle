@@ -1,6 +1,14 @@
 <!-- ans.ch keyid:<%= q_choice.choiceid %> -->
 <answer fraction="<%= iif( q_choice.choiceid = qques.questionid + qques.correct, '100', '0'  )  %>" format="moodle_auto_format">
- <text><![CDATA[<%= q_choice.ch_text %>]]></text>
+ <text><![CDATA[<% 
+ 	if ( (left(q_choice.ch_text, 1) = '"' ) and (right(q_choice.ch_text, 1) = '"' ) )
+ 		&& Then this is an exact-match response.  Both case, punctuation, and spacing must be exact.
+ 		Response.write(substr( substr(q_choice.ch_text, 2) ,1 ,len(q_choice.ch_text)-2 ) )  && trim out quotes.
+ 		mbz.case_sensitive = 1
+ 	else
+ 		Response.write(q_choice.ch_text)  
+ 	endif
+%>]]></text>
  <feedback format="html">
   <text><![CDATA[<%= iif( q_choice.choiceid = qques.questionid + qques.correct, qques.yup,  qques.nope  ) %>]]></text>
  </feedback>

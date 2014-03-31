@@ -10,7 +10,7 @@
     <defaultgrade>1.0000000</defaultgrade>
     <penalty>0.0000000</penalty>
     <hidden>0</hidden>
-    <usecase>0</usecase>
+    <usecase><%=mbz.case_sensitive%></usecase>
     <correctfeedback format="html">
       <text><![CDATA[<p><%= qques.yup %></p>]]></text>
     </correctfeedback>

@@ -33,6 +33,7 @@ define class MBZ	as custom
 	current_activity_id = 999
 	question_list = ''
 	answer_list = ''
+	case_sensitive = 0	&& Can vary per question.
 	questionid =  ''	&& only used for MATCH questions, where question cursor is gone by the time questionid is needed in template.
 	quiz_list = ''
 	section_list = ''
@@ -247,6 +248,7 @@ define class MBZ	as custom
 					
 					this.Log ("Export question " + qques.questionid + " (" + qsect.s_type + ") " + qques.qs_text )
 					m.qscount = m.qscount + 1
+					this.case_sensitive = 0
 					
 					if (qsect.s_type != 'MATCH')
 						this.answer_list = ''		&& These build through the entire section, and must be retained until the end of the section.
