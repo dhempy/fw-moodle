@@ -264,7 +264,7 @@ define class MBZ	as custom
 					scan 
 						&& this.Log("Choice " + q_choice.choiceid + ": " + q_choice.ch_text)
 					 	if ( (left(q_choice.ch_text, 1) = '"' ) and (right(q_choice.ch_text, 1) = '"' ) )
-					 		this.Log("CASE SENSITVE ANSWER: " + q_choice.choiceid + ": " + q_choice.ch_text)
+					 		&& this.Log("CASE SENSITVE ANSWER: " + q_choice.choiceid + ": " + q_choice.ch_text)
 					 		&& Then this is an exact-match response.  Both case, punctuation, and spacing must be exact. 
 					 		&& documentation: http://www.dl.ket.org/intranet/faq/qz_grade.htm#correct 
 					 		this.case_sensitive = 1
@@ -296,7 +296,7 @@ define class MBZ	as custom
 								m.marker = lower(m.marker)
 							endif
 							if (0 < at(m.marker , m.key_text_list ))
-								this.Log("Skipping duplicate key " + q_key.keyid + ": " + m.marker + "  >>> Existing keys: " + m.key_text_list )
+								&& this.Log("Skipping duplicate key " + q_key.keyid + ": " + m.marker + "  >>> Existing keys: " + m.key_text_list )
 							else
 								m.key_text_list = m.key_text_list + m.marker + ' '
 								this.answer_list = this.answer_list + this.MakeFile('', '', 'answer.key.xml')
