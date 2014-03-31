@@ -277,7 +277,6 @@ define class MBZ	as custom
 							order by keyid ;
 							into cursor q_key
 						
-&& Create array
 						m.key_text_list = ''
 						
 						scan 
@@ -287,14 +286,12 @@ define class MBZ	as custom
 							else
 								m.key_text_list = m.key_text_list + '~!' + q_key.K_text + '!~ '
 								this.answer_list = this.answer_list + this.MakeFile('', '', 'answer.key.xml')
-	&& Add key to array, overwriting prev. entries							
 								m.key_count = m.key_count + 1
 							endif
 						endscan
 				
 					endif
 
-&& Loop through array adding items to answer_list
 
  				  &&this.Log ("Question " + str(q_count) + " of  " + str(q_rows) + " in section " + qsect.sectionid  )		
 
