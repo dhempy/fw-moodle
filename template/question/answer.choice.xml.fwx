@@ -8,8 +8,4 @@
  		Response.write(q_choice.ch_text)  
  	endif
 %>]]></text>
-<%  && Don't duplicate question-level feedback into an answer key.  see https://github.com/dhempy/fw-moodle/issues/11
-	&&  <feedback format="html">
-	&&   <text><![CDATA[<%= iif( q_choice.choiceid = qques.questionid + qques.correct, qques.yup,  qques.nope  ) %>]]></text>
-	&&  </feedback>
-%></answer>
+</answer>
