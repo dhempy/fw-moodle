@@ -11,7 +11,7 @@
 <!-- question: section <%= qsect.sectionid %>  -->
   <question type="description">
     <name>
-      <text><%= qsect.sectionid %>|Section <![CDATA[<%= qsect.s_title %>]]></text>
+      <text><%= qsect.sectionid %> | Section <![CDATA[<%= qsect.s_title %>]]></text>
     </name>
     <questiontext format="html">
 	    <text><![CDATA[
