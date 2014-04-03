@@ -2,7 +2,7 @@
   <!-- question: <%= qques.id %>  -->
   <question type="essay">
     <name>
-      <text><%= qques.questionid %></text>
+      <text><%= qques.questionid %>|<![CDATA[<%= qques.qs_text %>]]></text>
     </name>
     <questiontext format="html">
       <text><![CDATA[<%= qques.qs_text %>]]></text>

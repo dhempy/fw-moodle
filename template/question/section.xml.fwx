@@ -7,6 +7,32 @@
     </category>
   </question>
 
+
+<!-- question: section <%= qsect.sectionid %>  -->
+  <question type="description">
+    <name>
+      <text><%= qsect.sectionid %>|Section <![CDATA[<%= qsect.s_title %>]]></text>
+    </name>
+    <questiontext format="html">
+	    <text><![CDATA[
+	    	<h2><%= qsect.s_title %></h2>
+	    	<%= iif(empty(qsect.s_header), '', '<p>' + qsect.s_header + '</p>') %> 
+	    	<%= iif(empty(qsect.s_footer), '', '<hr /><p>' + qsect.s_footer + '</p>') %> 
+	    ]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text></text>
+    </generalfeedback>
+    <hidden>0</hidden>
+    <defaultgrade>0.0000000</defaultgrade>
+    <penalty>0.0000000</penalty>
+    <tags>
+      <tag><text><%= qsect.sectionid %></text> </tag>
+      <tag><text><%= qz.quizid %></text> </tag>
+    </tags>
+  </question>
+
+
 	<%= mbz.question_list %>
 	
 	
