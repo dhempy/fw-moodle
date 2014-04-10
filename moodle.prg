@@ -26,6 +26,7 @@ define class MBZ	as custom
 	setting_list = CRLF
 	activity_list = CRLF
 	msg = ''
+	warnings = ''
 	backup_folder = ''
 	backup_filename = ''
 	backup_zipname = ''
@@ -206,6 +207,7 @@ define class MBZ	as custom
 		this.Log('<div class="warning">TO DO: Experiment with response.flush() or similar to get around output size limitation and improve responsiveness?</div>')
 		this.Log('<div class="warning">TO DO: Create quizzes to contain the questions.  (Maybe a separate script?) </div>')
 
+		this.Warn('<p>Recap of warnings during this export: </p><ul>' + this.warnings + '</ul>')
 
 		&& Restore any prior content and buffer state:
 		Response.Clear
@@ -305,6 +307,17 @@ define class MBZ	as custom
 								&& this.Log("Skipping duplicate key " + q_key.keyid + ": " + m.marker + "  >>> Existing keys: " + m.key_text_list )
 							else
 								m.key_text_list = m.key_text_list + m.marker + ' '
+								if (q_key.k_worth > qques.qs_worth)
+									this.Warn("Excess score reduced to 100%: " + alltrim(str(q_key.k_worth)) + "/" + alltrim(str(qques.qs_worth)) ;
+									+ "points for Key <a href='" + URL('Quiz') + "?courseid=" + this.courseid ;
+									+ "&" + "quizid=GR1Z001" ;
+									+ "&" + "do=grade" ;
+									+ "&" + "showme=all" ;
+									+ "&" + "questionID=" + qques.questionid  ;
+									+ "#k-" + q_key.keyid ;
+									+ "'>" ;
+									+ q_key.keyid + "</a>: " + q_key.k_text ) 
+								endif
 								this.answer_list = this.answer_list + this.MakeFile('', '', 'answer.key.xml')
 								m.key_count = m.key_count + 1
 							endif
@@ -772,6 +785,12 @@ define class MBZ	as custom
 
 	procedure Log(m.msg)
 		this.msg = this.msg + m.msg + '<br />' +CRLF
+		return m.msg
+	endproc		
+
+	procedure Warn(m.msg)
+		this.msg = this.msg + "<div class='warning'>" + m.msg + '</div>' +CRLF
+		this.warnings = this.warnings + '<li>' + m.msg + '</li>'+CRLF
 		return m.msg
 	endproc		
 
