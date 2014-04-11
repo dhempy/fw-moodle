@@ -3,7 +3,7 @@
 <!-- question: 0  -->
   <question type="category">
     <category>
-      <text><![CDATA[<%= mbz.export_title %>/<%= left(qz.quizid,4) %>/<%= qz.quizid + ' | ' + strtran(trim(qz.title), '/', '-') %>/<%= qsect.sectionid + ' | ' + strtran(trim(qsect.s_title), '/', '-') %>]]></text>
+      <text><![CDATA[<%= mbz.export_title %>/<%= left(qz.quizid,4) %>/<%= qz.quizid + ' | ' + strtran(trim(qz.title), '/', '-') %>/<%= qsect.sectionid + ' | ' + strtran(trim(left(Server.HTMLEncode(qsect.s_title),80)), '/', '-') %>]]></text>
     </category>
   </question>
 
@@ -11,7 +11,7 @@
 <!-- question: section <%= qsect.sectionid %>  -->
   <question type="description">
     <name>
-      <text><%= qsect.sectionid %> | - - -	<![CDATA[<%= qsect.s_title %>]]></text>
+      <text><%= qsect.sectionid %> | - - -	<![CDATA[<%= left(Server.HTMLEncode(qsect.s_title),80) %>]]></text>
     </name>
     <questiontext format="html">
 	    <text><![CDATA[
