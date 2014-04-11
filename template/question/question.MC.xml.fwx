@@ -2,7 +2,7 @@
 <!-- question: 35132  -->
   <question type="multichoice">
     <name>
-      <text><%= qques.questionid %> | <![CDATA[<%= qques.qs_text %>]]></text>
+      <text><%= qques.questionid %> | <![CDATA[<%= left(Server.HTMLEncode(qques.qs_text),80) %>]]></text>
     </name>
     <questiontext format="html">
       <text><![CDATA[<%= qques.qs_text %>]]></text>

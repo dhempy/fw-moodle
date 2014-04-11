@@ -4,7 +4,7 @@
 <!-- question: <%= qques.id %>  -->
   <question type="matching">
     <name>
-      <text><![CDATA[<%= qsect.sectionid + ' | ' + qsect.s_title %>]]></text>
+      <text><%= qques.questionid %> | <![CDATA[<%= left(Server.HTMLEncode(qques.qs_text),80) %>]]></text>
     </name>
     <questiontext format="html">
       <text><![CDATA[<h2><%= qsect.s_title %></h2> <%= qsect.s_header %> <%= qsect.s_footer %>]]></text>
