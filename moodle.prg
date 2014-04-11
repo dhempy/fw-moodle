@@ -355,14 +355,16 @@ define class MBZ	as custom
 
 
 	function ExportQuestion()
+	
+		m.effective_type = iif( empty(qques.export_typ), qsect.s_type, qques.export_typ )
 			 
-			 if (not (qsect.s_type = 'MC' or qsect.s_type = 'TEXT' or qsect.s_type = 'MATCH' or qsect.s_type = 'ESSAY'))
-			 	this.Log('<div class="notice">We do not have a template for ' + qsect.s_type + ' yet.</div>')
-			 	return
-			 endif
+		if (not (m.effective_type = 'MC' or m.effective_type = 'TEXT' or m.effective_type = 'MATCH' or m.effective_type = 'ESSAY'))
+			this.Log('<div class="notice">We do not have a template for ' + m.effective_type + ' yet.</div>')
+			return
+		endif
 			 
 			 
-			m.question = this.MakeFile('', '', 'question.' + trim(qsect.s_type) + '.xml')
+			m.question = this.MakeFile('', '', 'question.' + trim(m.effective_type) + '.xml')
 			this.question_list = this.question_list + m.question
 			
 	endfunc
