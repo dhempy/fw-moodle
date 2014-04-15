@@ -248,13 +248,20 @@ define class MBZ	as custom
 					q_count = q_count + 1
 					m.choice_count = 0
 					m.key_count = 0
+					
+					if ( empty( qques.export_typ) )
+						m.effective_type = qsect.s_type 	
+					else 
+						&& FoxWeb question author may override the section's question type for one question.
+						m.effective_type = qques.export_typ
+					endif
 						
 					
-					this.Log ("Export question " + qques.questionid + " (" + qsect.s_type + ") " + qques.qs_text )
+					this.Log ("Export question " + qques.questionid + " (" + m.effective_type + ") " + qques.qs_text )
 					m.qscount = m.qscount + 1
 					this.case_sensitive = 0
 					
-					if (qsect.s_type != 'MATCH')
+					if (m.effective_type != 'MATCH')
 						this.answer_list = ''		&& These build through the entire section, and must be retained until the end of the section.
 					else 
 						this.section_points = this.section_points + qques.qs_worth 	&& This is only relevant for Matching questions.
@@ -278,15 +285,15 @@ define class MBZ	as custom
 					 	endif
 
 						this.answer_list = this.answer_list + this.MakeFile('', '', 'answer.choice'   ;
-								+ iif( qsect.s_type = 'MATCH', '.MATCH', '' )  ;
-								+ iif( qsect.s_type = 'ESSAY', '.ESSAY', '' )  ;
+								+ iif( m.effective_type = 'MATCH', '.MATCH', '' )  ;
+								+ iif( m.effective_type = 'ESSAY', '.ESSAY', '' )  ;
 								+ '.xml')
 						
 						m.choice_count = m.choice_count + 1
 					endscan
 					
 				
-					if (qsect.s_type = 'TEXT') 
+					if (m.effective_type = 'TEXT') 
 						&& Collect answers in qkey:					
 						select qkey.* ;
 							from dl!qkey ;
@@ -328,7 +335,7 @@ define class MBZ	as custom
 
  				  &&this.Log ("Question " + str(q_count) + " of  " + str(q_rows) + " in section " + qsect.sectionid  )		
 
-					if (qsect.s_type != 'MATCH'  or (q_count = q_rows) )		&& Only fill matching templates on the last question of the section.
+					if (m.effective_type != 'MATCH'  or (q_count = q_rows) )		&& Only fill matching templates on the last question of the section.
 						this.ExportQuestion()	&& combines question data with this.answer_list from keys and choices.
 						this.Log(" + " + alltrim(str(m.choice_count)) + " answers, " + alltrim(str(m.key_count)) + " keys")
 						this.answer_list = ''
@@ -356,7 +363,7 @@ define class MBZ	as custom
 
 	function ExportQuestion()
 	
-		m.effective_type = iif( empty(qques.export_typ), qsect.s_type, qques.export_typ )
+		m.effective_type = trim(iif( empty(qques.export_typ), qsect.s_type, qques.export_typ ))
 			 
 		if (not (m.effective_type = 'MC' or m.effective_type = 'TEXT' or m.effective_type = 'MATCH' or m.effective_type = 'ESSAY'))
 			this.Log('<div class="notice">We do not have a template for ' + m.effective_type + ' yet.</div>')
