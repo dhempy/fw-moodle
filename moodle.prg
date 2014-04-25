@@ -95,8 +95,9 @@ define class MBZ	as custom
 		this.MakeFile("inforef.xml",    "course")
 		
 		
-		this.Log("NEXT: <em>Create sub folders for each lesson and populate.</em>")
 		
+
+		this.Log("Saved export files to: <tt>" + this.backup_folder + "</tt>") 
 
 
 		&& Restore any prior content and buffer state:
@@ -405,7 +406,9 @@ define class MBZ	as custom
 		&& Set up this.template_folder: 			=========================
 
 		this.template_folder = '/db/moodle/template/' + m.subfolder			&& assumes relative to the called script, probably under /dl/intranet...
-  		
+
+		this.Log("Saving export files to: <tt>" + this.backup_folder + "</tt>") 
+		
   endfunc
 
 
@@ -458,7 +461,7 @@ define class MBZ	as custom
 			if (!file(m.dest))
 				this.Log("<strong class='error'>ERROR: Could not create &dest from &src</strong>")
 			else
-				this.Log("Created <tt>&dest</tt> --  &bytes bytes" )
+				&& this.Log("Created <tt>&dest</tt> --  &bytes bytes" )
 			endif
 		endif
 		
@@ -532,7 +535,7 @@ define class MBZ	as custom
 	
 
 		m.top_limit = ''
-		m.top_limit = 'top 10'
+		m.top_limit = 'top 3'
 		
  		select &top_limit doc , lesson, unit_number, unit, lesson_label, lesson_id, lessons.id, lesson_number ;
 			from dl!lessons ;
@@ -548,8 +551,7 @@ define class MBZ	as custom
 			this.Log("<div class='box'> <h2>Lesson " + alltrim(str(lesson.lesson_id)) + ": " + alltrim(lesson.id)	 + " | "+ alltrim(lesson.lesson) + "</h2>")
 
 			this.ExportLesson()
-&&			this.ExportLessonActivities()						&& Todo: remove this =============
-			this.ExportLessonBulletins()	
+			this.ExportLessonCategories()			&& And the bulletins therein...
 		
 			this.section_count = this.section_count + 1
 			this.Log("</div>")
@@ -611,9 +613,20 @@ define class MBZ	as custom
 	endfunc
 
 
-	function ExportLessonActivities()	
+	function ExportLessonCategoryCombined()	
 
-&&		this.activity_list = this.activity_list + "TODO: 	ExportLessonActivities() for " + lesson.lesson + "<br />"+CRLF
+			this.activity_list = this.activity_list + "TODO: 	ExportLessonCategoryCombined() for " + lesson.lesson + "<br />"+CRLF
+			this.Warn("TODO: 	ExportLessonCategoryCombined() for " + lesson.lesson)
+			return
+			return
+			return
+			return
+			return
+			return
+			return
+			return
+			return
+			
 
 
 			m.sectionid = alltrim(str(lesson.lesson_id)) 
@@ -653,7 +666,6 @@ define class MBZ	as custom
 
 			
 
-&&			this.ExportLessonBulletins()
 
 			=Bulletin(.T., lesson.doc, .T.)
 
@@ -684,10 +696,10 @@ this.Warn("ToDo: lesson fields dependent on =Bulletin?")
 
 
   *********************************************************************************
-	procedure ExportLessonBulletins(m.lesson_doc)
+	procedure ExportLessonCategories(m.lesson_doc)
 	
 	
-			this.Log("<h3>ExportLessonBulletins for " + alltrim(lesson.id) + ": " + alltrim(lesson.lesson) + "</h3>")
+			this.Log("<h3>ExportLessonCategories for " + alltrim(lesson.id) + ": " + alltrim(lesson.lesson) + "</h3>")
 		
 			m.where_clause = ' and forsch = .T. '		&& Maybe add forstu, forfac fields?  What about forpub?
 			m.order_by = ''
@@ -699,23 +711,44 @@ this.Warn("ToDo: lesson fields dependent on =Bulletin?")
 		 		order by sort_order, category ;
 		 		into cursor cat
 					
-			this.Log("Found " + alltrim(str(_tally)) + " categories")
+			&& this.Log("Found " + alltrim(str(_tally)) + " categories")
 			
 			scan
-				this.Log("Cat: " + trim(str(cat.id) )+ ". " + trim(cat.category )+ " exp_type: <b>" + cat.exp_type + "</b>")
-				this.CreateLabel(cat.category)
+
+				if (cat.exp_type == 'skip')
+					loop
+				endif
+				
+
+				this.Log("<h4>Category: " + trim(str(cat.id) )+ ". " + trim(cat.category )+ "</h4>" )
+
+				if (cat.exp_type == 'combine')
+					this.Log(" <b> === Export type: " + cat.exp_type + " === </b>")
+					this.ExportLessonCategoryCombined()			&& Handles category title, etc.
+				else 
+					&& default behavior is 'single'
+					this.ExportLessonCategoryBulletins()
+				endif
+
 			endscan
 			
 		
-&&			if (lesson.exp_type = "combine"
-		
-&& ExportLessonActivities()			
 	endproc
 	
 	
 	
 	
 	
+
+	function ExportLessonCategoryBulletins()
+		this.CreateLabel(cat.category)
+		this.Warn("ToDo: <b>FIRST: Restore current export into Moodle and test for function!!!</b> ")
+
+		this.Log("ToDo: Suppress irrelevant categories. (no bulletins)")
+
+		this.Warn("ToDo: Export bulletins in cat.")
+					
+	endfunc
 
 
 
@@ -728,7 +761,7 @@ this.Warn("ToDo: lesson fields dependent on =Bulletin?")
 				m.label_name = m.name
 			endif
 			
-			this.Warn("CreateLabel(" + m.label_text + ")")
+			&& this.Warn("CreateLabel(" + m.label_text + ")")
 		
 
 			m.sectionid = alltrim(str(lesson.lesson_id)) 
@@ -768,11 +801,7 @@ this.Warn("ToDo: lesson fields dependent on =Bulletin?")
 
 			m.activity_folder =  "activities\label_" + m.activityid 
 			
-			this.Log("Set activity folder to " + 			m.activity_folder )
-			
-&& 
-&& 			m.label_text = m.bull_list + m.sidebar
-&& 			m.label_text = strtran(m.label_text, '&', '&'+'amp;')	&& Moodle's (PHP's?) XML parser squawks on naked ampersands.  This strtran must come first.
+ 			m.label_text = strtran(m.label_text, '&', '&'+'amp;')	&& Moodle's (PHP's?) XML parser squawks on naked ampersands.  This strtran must come first.
 && 			m.label_text = strtran(m.label_text, '<', '&'+'lt;')
 && 			m.label_text = strtran(m.label_text, '>', '&'+'gt;')
 && 			
