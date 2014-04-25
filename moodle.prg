@@ -31,7 +31,7 @@ define class MBZ	as custom
 	backup_filename = ''
 	backup_zipname = ''
 	template_folder = ''	
-	current_activity_id = 999
+	current_activity_id = 1000
 	question_list = ''
 	section_points = 0 && only relevant to matching sections
 	answer_list = ''
@@ -60,7 +60,7 @@ define class MBZ	as custom
 *********************************************************************************
   procedure ExportMoodleCourse
       * Generates intermediate .xml files and zips to create a Moodle .mbz file. 
-      * This is probably the only function you need to call.
+      * This is probably the only function you need to call from outside to export a course.
 
 		this.Log(	"ExportMoodleCourse starting for " + this.courseid + ": " + trim(thiscrs.coursename) + " to folder [" + this.backup_folder + "]" )
 
@@ -98,7 +98,6 @@ define class MBZ	as custom
 		this.Log("NEXT: <em>Create sub folders for each lesson and populate.</em>")
 		
 
-		** this.ExportBulletins()
 
 		&& Restore any prior content and buffer state:
 		Response.Clear
@@ -421,7 +420,7 @@ define class MBZ	as custom
 		* Assumes Response.Buffer is .T.
 		* If m.dest_fname is empty(), don't create the output file.  (STill returns output)
 		*   In this case, you need to spec the src_fname, such as MakeFile('', '', 'my_template.xml')
-		* MakeFile() returns the generated content)
+		* MakeFile() returns the generated content
 		
 		m.dest_path = iif( empty(m.dest_path), ''          , "\" + m.dest_path )
 		m.src_fname = iif( empty(m.src_fname), m.dest_fname, m.src_fname )
@@ -505,14 +504,14 @@ define class MBZ	as custom
 
 
 
-  *********************************************************************************
-  * Scans various content in the FoxWeb course, in prep for exporting to mbz by ExportMoodleCourse()
-	procedure ScanFoxWebCourse
-		this.Log("ScanFoxWebCourse starting")
-		
-		this.ScanLessons()
-
-	endproc
+&&   *********************************************************************************
+&&   * Scans various content in the FoxWeb course, in prep for exporting to mbz by ExportMoodleCourse()
+&& 	procedure ScanFoxWebCourse
+&& 		this.Log("ScanFoxWebCourse starting")
+&& 		
+&&  		this.ScanLessons()
+&& 
+&& 	endproc
 
 
 
@@ -532,10 +531,10 @@ define class MBZ	as custom
 		this.Log("Exporting " + alltrim(str(ThisCrs.last_less)) + " lessons.")
 	
 
-		m.top_limit = 'top 10'
 		m.top_limit = ''
+		m.top_limit = 'top 10'
 		
- 		select &top_limit doc , lesson, unit_number, unit, lesson_label, lesson_id, lesson_number ;
+ 		select &top_limit doc , lesson, unit_number, unit, lesson_label, lesson_id, lessons.id, lesson_number ;
 			from dl!lessons ;
 			left outer join unit on unit.id = lessons.unit_id ;
 			where lessons.courseid==m.courseid ;
@@ -546,10 +545,14 @@ define class MBZ	as custom
 		this.section_count = 0
 		
 		scan
+			this.Log("<div class='box'> <h2>Lesson " + alltrim(str(lesson.lesson_id)) + ": " + alltrim(lesson.id)	 + " | "+ alltrim(lesson.lesson) + "</h2>")
+
 			this.ExportLesson()
-			this.ExportLessonActivities()	
+&&			this.ExportLessonActivities()						&& Todo: remove this =============
+			this.ExportLessonBulletins()	
 		
 			this.section_count = this.section_count + 1
+			this.Log("</div>")
 		endscan
 	
 		
@@ -648,18 +651,24 @@ define class MBZ	as custom
 	    this.activity_list = this.activity_list + m.activity_tag
 	    this.setting_list = this.setting_list + m.setting_tag
 
-			m.activity_folder =  "activities\label_" + m.activityid 
 			
 
-		
+&&			this.ExportLessonBulletins()
+
 			=Bulletin(.T., lesson.doc, .T.)
-			
+
+this.Warn("ToDo: lesson fields dependent on =Bulletin?")			
+
 			m.label_text = m.bull_list + m.sidebar
-			m.label_text = strtran(m.label_text, '&', '&'+'amp;')	&& Moodle's (PHP's?) XML parser squacks on naked ampersands.  This strtran must come first.
+			m.label_text = strtran(m.label_text, '&', '&'+'amp;')	&& Moodle's (PHP's?) XML parser squawks on naked ampersands.  This strtran must come first.
 			m.label_text = strtran(m.label_text, '<', '&'+'lt;')
 			m.label_text = strtran(m.label_text, '>', '&'+'gt;')
 			
 &&			m.label_text = strconv(m.label_text, 9)	&& Convert to UTF-8
+
+			m.label_name = 'Combined Bulletins for ' + alltrim(lesson.lesson)
+
+			m.activity_folder =  "activities\label_" + m.activityid 
 
 			this.MakeFile("inforef.xml" , m.activity_folder, .F., "activities\label_")
 			this.MakeFile("label.xml"   , m.activity_folder, .F., "activities\label_")
@@ -671,66 +680,113 @@ define class MBZ	as custom
 	endfunc
 
 
+
+
+
   *********************************************************************************
-	procedure ExportBulletins()
-		local m.start, m.stop, m.one_doc
-	*	local m.AllBoards, m.OneBoard
-	*	local m.first_day
+	procedure ExportLessonBulletins(m.lesson_doc)
 	
 	
-		this.Log("ExportBulletins()...")
+			this.Log("<h3>ExportLessonBulletins for " + alltrim(lesson.id) + ": " + alltrim(lesson.lesson) + "</h3>")
 		
-		
-	&&	for m.one_doc = 1 to ThisCrs.last_less
-		for m.one_doc = 1 to 3		&&&&&&&&& limit to three during testing.
-			m.body = m.body + "<hr /><div class='box'><h2>Lesson " + alltrim(str(m.one_doc)) + " </h2>"+CRLF
-			=Bulletin(.T., str(m.one_DOC), .T.)
-			m.body = m.body + "<div class='box'>" + m.bull_list + "</div>" +CRLF
-			m.body = m.body + "<div class='box'>" + m.sidebar + "</div>" +CRLF
-			m.body = m.body + "</div>"+CRLF
+			m.where_clause = ' and forsch = .T. '		&& Maybe add forstu, forfac fields?  What about forpub?
+			m.order_by = ''
 			
-		endfor
-	
-		m.body = m.body + "</ul>"+CRLF
-		
-		m.AllBoards = ''
-		
-		return 
+
+		 	select bul_cat.* from dl!bul_cat ;
+				where bul_cat.id in ;
+					(select bul_catid from dl!bul_catcrs where courseid = this.courseid) ;
+		 		order by sort_order, category ;
+		 		into cursor cat
 					
-		for m.one_doc = m.start to m.stop
-			HTML_out = ''
-			m.DocBottom = ''
-			=Bulletin(.T., str(m.one_DOC))
-			m.OneBoard = HTML_out
+			this.Log("Found " + alltrim(str(_tally)) + " categories")
 			
-			if m.one_doc = m.start
-				clip_start = 1
-			else
-			clip_start = at('<!-- DayStart Do not edit this line! -->',m.OneBoard)
-			endif
-			if m.one_doc = m.stop
-				clip_stop = len(m.OneBoard)+1
-			else
-				clip_stop  = at('<!-- DayStop  Do not edit this line! -->' ,m.OneBoard)
-			endif
-			m.AllBoards ;
-				= m.AllBoards ;
-				+ substr(m.OneBoard,clip_start, clip_stop-clip_start) +iif(m.one_doc = m.stop,'','<hr>')+CRLF;
-				+ CRLF + CRLF 
-	
-	
-				
-		endfor
+			scan
+				this.Log("Cat: " + trim(str(cat.id) )+ ". " + trim(cat.category )+ " exp_type: <b>" + cat.exp_type + "</b>")
+				this.CreateLabel(cat.category)
+			endscan
+			
 		
-		HTML_out = m.AllBoards
-	
-	
-	*!*		=Merge('shell.htm')
+&&			if (lesson.exp_type = "combine"
+		
+&& ExportLessonActivities()			
 	endproc
 	
 	
 	
 	
+	
+
+
+
+
+	function CreateLabel(m.text, m.name)	
+			m.label_text = alltrim(m.text)
+			if empty(m.name)
+				m.label_name = m.label_text
+			else
+				m.label_name = m.name
+			endif
+			
+			this.Warn("CreateLabel(" + m.label_text + ")")
+		
+
+			m.sectionid = alltrim(str(lesson.lesson_id)) 
+			m.activityid = this.NewActivityID()
+			
+			m.activity_tag = "";
+	      + '  <activity>' +CRLF ; 
+	      + '    <moduleid>' + m.activityid + '</moduleid>' +CRLF ;
+	      + '    <sectionid>' + m.sectionid + '</sectionid>' +CRLF ;
+	      + '    <modulename>label</modulename>' +CRLF ;
+	      + '    <title>LABEL TITLE: ' + m.label_text +  '</title>' +CRLF ;
+	      + '    <directory>activities/label_' + m.activityid + '</directory>' +CRLF ;
+	      + '  </activity>' +CRLF
+
+			m.setting_tag = "";
+				 + '      <setting>' + CRLF ;
+		     + '        <level>activity</level>' + CRLF ;
+		     + '        <activity>label_' + m.activityid + '</activity>' + CRLF ;
+		     + '        <name>label_' + m.activityid + '_included</name>' + CRLF ;
+		     + '        <value>1</value>' + CRLF ;
+		     + '      </setting>' + CRLF ;
+		     + '      <setting>' + CRLF ;
+		     + '        <level>activity</level>' + CRLF ;
+		     + '        <activity>label_' + m.activityid + '</activity>' + CRLF ;
+		     + '        <name>label_' + m.activityid + '_userinfo</name>' + CRLF ;
+		     + '        <value>0</value>' + CRLF ;
+		     + '      </setting>' + CRLF 
+
+	      
+			if isnull(m.activity_tag) or isnull(m.setting_tag)
+				m.activity_tag = "WARNING: null field in bulletins " + m.activityid + ". Nothing to export."+CRLF
+				this.Warn(m.activity_tag)
+			endif
+			
+	    this.activity_list = this.activity_list + m.activity_tag
+	    this.setting_list = this.setting_list + m.setting_tag
+
+			m.activity_folder =  "activities\label_" + m.activityid 
+			
+			this.Log("Set activity folder to " + 			m.activity_folder )
+			
+&& 
+&& 			m.label_text = m.bull_list + m.sidebar
+&& 			m.label_text = strtran(m.label_text, '&', '&'+'amp;')	&& Moodle's (PHP's?) XML parser squawks on naked ampersands.  This strtran must come first.
+&& 			m.label_text = strtran(m.label_text, '<', '&'+'lt;')
+&& 			m.label_text = strtran(m.label_text, '>', '&'+'gt;')
+&& 			
+&& &&			m.label_text = strconv(m.label_text, 9)	&& Convert to UTF-8
+
+			
+			this.MakeFile("inforef.xml" , m.activity_folder, .F., "activities\label_")
+			this.MakeFile("label.xml"   , m.activity_folder, .F., "activities\label_")
+			this.MakeFile("filters.xml" , m.activity_folder, .F., "activities\label_")
+			this.MakeFile("grades.xml"  , m.activity_folder, .F., "activities\label_")
+			this.MakeFile("module.xml"  , m.activity_folder, .F., "activities\label_")
+			this.MakeFile("roles.xml"   , m.activity_folder, .F., "activities\label_")
+
+	endfunc
 	
 	
   *********************************************************************************

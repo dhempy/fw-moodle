@@ -8,7 +8,11 @@
 	<link rel="stylesheet" type="text/css" media="print" href="/style/default_print.css" />
 </head>
 <body>	
-	<h1>Exporting <%= ThisCrs.courseid %>: <%= ThisCrs.coursename %> </h1>
+	<% IncludeFwx('header.fwx') %>
+
+	<%= DocTop %>
+
+	<h1>Exporting Course <%= ThisCrs.courseid %>: <%= ThisCrs.coursename %> </h1>
 
 	
 	
@@ -37,7 +41,8 @@
 			<h2>Course Export Parameters</h2>
 		
 			<dl>
-				
+
+<!-- 				
 				<dt>
 					Export a single quiz:  
 				</dt>
@@ -46,36 +51,21 @@
 					<br />
 					<em>e.g. <%=m.courseid%>034</em>  Alternately, find it in Quiz Shop and export from there.
 				</dd>
-
-				<dt>
-					<em>OR</em> Export a Range of Quiz ID's:  
-				</dt>
-				<dd>
-					<input name="quiz_first" value="<%= Request.QueryString('quiz_first') %>" size="8" maxlength="7" /> - 
-					<input name="quiz_last" value="<%= Request.QueryString('quiz_last') %>" size="8" maxlength="7" /> 
-					<br />
-					<em>e.g. <%=m.courseid%>001 - <%=m.courseid%>050 </em>
-				</dd>
-
-				<dt>
-					How many quizzes to export?  
-				</dt>
-				<dd>
-					<input name="limit" value="<%= Request.QueryString('limit') %>" size="4" maxlength="3" />  
-					<br />
-					<em>Leave blank for all</em>
-				</dd>
+ -->
 
 			
 				<dt>
 					<input type="submit" name="do" value="Export Course" />
 				</dt>
+				
+<!--				
 				<dd>
 					The export can take a long time. Figure about 50 quizzes per minute. Exporting more than 50-100 quizzes
 					at once may run into a "file too large" error, so consider exporting your files in chunks. 
 					Importing these files into Moodle takes *much* longer, perhaps one quiz per minute, so plan
 					accordingly.
 				</dd>
+-->
 
 
 			</dl>
@@ -89,6 +79,8 @@
 			
 		</div>
 	
+
+<% IncludeFwx('footer.fwx') %>
 
 </body>
 </html>

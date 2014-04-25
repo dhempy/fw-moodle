@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <activity id="148" moduleid="<%= m.activityid %>" modulename="label" contextid="723">
   <label id="148">
-    <name>Bulletins for <%=alltrim(lesson.lesson)%></name>
+    <name><%= m.label_name %></name> 	
     <intro>
     	<%= m.label_text %>
    	</intro>
