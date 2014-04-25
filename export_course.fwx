@@ -1,0 +1,101 @@
+<%	StaffOnly() %>
+<html>
+<head>
+	<title>Moodle Course Export <%= ThisCrs.courseid %>: <%= ThisCrs.coursename %></title>
+	<%= DocHead %>
+	<link rel="stylesheet" type="text/css" href="/style/intranet.css" />
+	<style type="text/css" media="screen">@import url(/style/default.css);</style>
+	<link rel="stylesheet" type="text/css" media="print" href="/style/default_print.css" />
+</head>
+<body>	
+	<h1>Exporting <%= ThisCrs.courseid %>: <%= ThisCrs.coursename %> </h1>
+
+	
+	
+<%
+  set procedure to \db\moodle\moodle additive
+  
+  m.start_time = datetime()
+  
+	if (lower(Request.QueryString('do')) = 'export course')
+    mbz = createobject("MBZ")
+    mbz.ExportMoodleCourse()
+%>
+
+	<p> Started at <%= ttoc(m.start_time) %> </p>
+
+	Msgs:
+	<div> 	<%= mbz.msg  %> </div>
+
+	<p> Ending at <%= ttoc(datetime()) %>  after <%= datetime() - m.start_time %> seconds of execution. </p>
+<%
+	endif
+%>
+
+
+		<form method="get" class="box">
+			<h2>Course Export Parameters</h2>
+		
+			<dl>
+				
+				<dt>
+					Export a single quiz:  
+				</dt>
+				<dd>
+					<input name="quizid" value="<%= Request.QueryString('quizid') %>" size="8" maxlength="7" /> 
+					<br />
+					<em>e.g. <%=m.courseid%>034</em>  Alternately, find it in Quiz Shop and export from there.
+				</dd>
+
+				<dt>
+					<em>OR</em> Export a Range of Quiz ID's:  
+				</dt>
+				<dd>
+					<input name="quiz_first" value="<%= Request.QueryString('quiz_first') %>" size="8" maxlength="7" /> - 
+					<input name="quiz_last" value="<%= Request.QueryString('quiz_last') %>" size="8" maxlength="7" /> 
+					<br />
+					<em>e.g. <%=m.courseid%>001 - <%=m.courseid%>050 </em>
+				</dd>
+
+				<dt>
+					How many quizzes to export?  
+				</dt>
+				<dd>
+					<input name="limit" value="<%= Request.QueryString('limit') %>" size="4" maxlength="3" />  
+					<br />
+					<em>Leave blank for all</em>
+				</dd>
+
+			
+				<dt>
+					<input type="submit" name="do" value="Export Course" />
+				</dt>
+				<dd>
+					The export can take a long time. Figure about 50 quizzes per minute. Exporting more than 50-100 quizzes
+					at once may run into a "file too large" error, so consider exporting your files in chunks. 
+					Importing these files into Moodle takes *much* longer, perhaps one quiz per minute, so plan
+					accordingly.
+				</dd>
+
+
+			</dl>
+			
+		</form>
+	
+
+		<div class="box">
+			<h2>Download Export Files</h2>
+			<p>Exported Courses are available at <a href="ftp://util1.ket.org/">ftp://util1.ket.org/</a> . See your sysadmin for access.
+			
+		</div>
+	
+
+</body>
+</html>
+
+<%
+	&& This is important, or you can't recompile this file without restarting FoxWeb.
+	release mbz
+	clear class MBZ
+%>
+
