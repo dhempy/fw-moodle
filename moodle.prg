@@ -60,7 +60,7 @@ define class MBZ	as custom
 *********************************************************************************
   procedure ExportMoodleCourse
       * Generates intermediate .xml files and zips to create a Moodle .mbz file. 
-      * This is probably the only functio you need to call.
+      * This is probably the only function you need to call.
 
 		this.Log(	"ExportMoodleCourse starting for " + this.courseid + ": " + trim(thiscrs.coursename) + " to folder [" + this.backup_folder + "]" )
 
@@ -203,9 +203,9 @@ define class MBZ	as custom
 		this.MakeFile( m.filename, .F., "questions.xml")
 
 
-		this.Log('<div class="warning">TO DO: Write each quiz to disk, then batch into separate files (maybe X quizzes/file or Y bytes/file?)</div>')
-		this.Log('<div class="warning">TO DO: Experiment with response.flush() or similar to get around output size limitation and improve responsiveness?</div>')
-		this.Log('<div class="warning">TO DO: Create quizzes to contain the questions.  (Maybe a separate script?) </div>')
+&&		this.Log('<div class="warning">TO DO: Write each quiz to disk, then batch into separate files (maybe X quizzes/file or Y bytes/file?)</div>')
+&&		this.Log('<div class="warning">TO DO: Experiment with response.flush() or similar to get around output size limitation and improve responsiveness?</div>')
+&&		this.Log('<div class="warning">TO DO: Create quizzes to contain the questions.  (Maybe a separate script?) </div>')
 
 		this.Warn('<p>Recap of warnings during this export: </p><ul>' + this.warnings + '</ul>')
 
