@@ -774,7 +774,7 @@ this.Warn("ToDo: lesson fields dependent on =Bulletin?")
 		endif
 
 		this.Log("<h4>Category: " + trim(str(cat.id) )+ ". " + trim(cat.category )+ " (" + alltrim(str(_tally)) + " bulletins)</h4>" )
-		this.CreateLabel(cat.category)
+		this.CreateLabel("<h3>"+alltrim(cat.category)+ "</h3>")
 		this.Warn("ToDo: Export bulletins in cat.")
 
 		m.bull_count = 0
@@ -796,8 +796,10 @@ this.Warn("ToDo: lesson fields dependent on =Bulletin?")
 
 
 	function ExportBulletin()
-		this.Log("TODO: ExportBulletin() Bulletin: " + trim(str(Bull.bulletinid) )+ ". " + trim(Bull.text) )
-
+		this.Log("ExportBulletin(): " + trim(str(Bull.bulletinid) )+ ". " + trim(Bull.text) )
+		this.CreateLabel(bull.text)
+		
+		this.Log("TODO: Parse for embedded links." )
 		return 1
 	endfunc
 
@@ -810,8 +812,16 @@ this.Warn("ToDo: lesson fields dependent on =Bulletin?")
 			else
 				m.label_name = m.name
 			endif
+
 			
-			&& this.Warn("CreateLabel(" + m.label_text + ")")
+			this.Log("CreateLabel(" + m.label_text + ")")
+
+&&&&&&&&& These conversions not needed - the real answer is to embed in a <![CDATA[ ..... ]]> tag.
+ &&			m.label_text = strtran(m.label_text, '&', '&'+'amp;')	&& Moodle's (PHP's?) XML parser squawks on naked ampersands.  This strtran must come first.
+&& 			m.label_text = strtran(m.label_text, '<', '&'+'lt;')
+&& 			m.label_text = strtran(m.label_text, '>', '&'+'gt;')
+&& 			
+&& &&			m.label_text = strconv(m.label_text, 9)	&& Convert to UTF-8
 		
 
 			m.sectionid = alltrim(str(lesson.lesson_id)) 
@@ -821,10 +831,12 @@ this.Warn("ToDo: lesson fields dependent on =Bulletin?")
 	      + '  <activity>' +CRLF ; 
 	      + '    <moduleid>' + m.activityid + '</moduleid>' +CRLF ;
 	      + '    <sectionid>' + m.sectionid + '</sectionid>' +CRLF ;
-	      + '    <modulename>label</modulename>' +CRLF ;
-	      + '    <title>LABEL TITLE: ' + m.label_text +  '</title>' +CRLF ;
+	      + '    <modulename>label</modulename>' +CRLF +CRLF;
+	      + '    <title><![CDATA[LABEL TITLE: ' + m.label_text +  ']]></title>' +CRLF ;
 	      + '    <directory>activities/label_' + m.activityid + '</directory>' +CRLF ;
 	      + '  </activity>' +CRLF
+
+&&	      + '    <title>![CDATA[LABEL TITLE: ' + strtran(strtran(m.label_text,'>','}'),'<','{') +  ']]</title>' +CRLF ;
 
 			m.setting_tag = "";
 				 + '      <setting>' + CRLF ;
@@ -851,11 +863,6 @@ this.Warn("ToDo: lesson fields dependent on =Bulletin?")
 
 			m.activity_folder =  "activities\label_" + m.activityid 
 			
- 			m.label_text = strtran(m.label_text, '&', '&'+'amp;')	&& Moodle's (PHP's?) XML parser squawks on naked ampersands.  This strtran must come first.
-&& 			m.label_text = strtran(m.label_text, '<', '&'+'lt;')
-&& 			m.label_text = strtran(m.label_text, '>', '&'+'gt;')
-&& 			
-&& &&			m.label_text = strconv(m.label_text, 9)	&& Convert to UTF-8
 
 			
 			this.MakeFile("inforef.xml" , m.activity_folder, .F., "activities\label_")
