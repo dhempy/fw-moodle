@@ -99,6 +99,7 @@ define class MBZ	as custom
 
 		this.Log("Saved export files to: <tt>" + this.backup_folder + "</tt>") 
 
+		this.Warn('<p>Recap of warnings during this export: </p><ul>' + this.warnings + '</ul>')
 
 		&& Restore any prior content and buffer state:
 		Response.Clear
@@ -806,6 +807,10 @@ this.Warn("ToDo: lesson fields dependent on =Bulletin?")
 
 
 	function CreateLabel(m.text, m.name)	
+
+			m.sectionid = alltrim(str(lesson.lesson_id)) 
+			m.activityid = this.NewActivityID()
+
 			m.label_text = alltrim(m.text)
 			if empty(m.name)
 				m.label_name = m.label_text
@@ -813,9 +818,15 @@ this.Warn("ToDo: lesson fields dependent on =Bulletin?")
 				m.label_name = m.name
 			endif
 
+			m.label_name = strtran(strtran(m.label_name, '>', '}' ), '<', '{' )   && don't really want links in names, truncating can leave broken tags.
 			
-			this.Log("CreateLabel(" + m.label_text + ")")
+			&& this.Log("CreateLabel(" m.activityid + "." + m.label_text + ") (" + alltrim(str(len(m.label_text))) + ' chars' )
 
+			if (len(m.label_name) >= 75) 
+				m.label_name = left(m.label_name,75)
+				this.log('Truncating name of ' + m.activityid + ' text to 75 characters. (Actual content not affected) ' + alltrim(str(len(m.label_name))) + ' chars in: ' + m.label_name)
+			endif
+			
 &&&&&&&&& These conversions not needed - the real answer is to embed in a <![CDATA[ ..... ]]> tag.
  &&			m.label_text = strtran(m.label_text, '&', '&'+'amp;')	&& Moodle's (PHP's?) XML parser squawks on naked ampersands.  This strtran must come first.
 && 			m.label_text = strtran(m.label_text, '<', '&'+'lt;')
@@ -824,19 +835,15 @@ this.Warn("ToDo: lesson fields dependent on =Bulletin?")
 && &&			m.label_text = strconv(m.label_text, 9)	&& Convert to UTF-8
 		
 
-			m.sectionid = alltrim(str(lesson.lesson_id)) 
-			m.activityid = this.NewActivityID()
 			
 			m.activity_tag = "";
 	      + '  <activity>' +CRLF ; 
 	      + '    <moduleid>' + m.activityid + '</moduleid>' +CRLF ;
 	      + '    <sectionid>' + m.sectionid + '</sectionid>' +CRLF ;
 	      + '    <modulename>label</modulename>' +CRLF +CRLF;
-	      + '    <title><![CDATA[LABEL TITLE: ' + m.label_text +  ']]></title>' +CRLF ;
+	      + '    <title><![CDATA[LABEL TITLE: ' + m.label_name +  ']]></title>' +CRLF ;
 	      + '    <directory>activities/label_' + m.activityid + '</directory>' +CRLF ;
 	      + '  </activity>' +CRLF
-
-&&	      + '    <title>![CDATA[LABEL TITLE: ' + strtran(strtran(m.label_text,'>','}'),'<','{') +  ']]</title>' +CRLF ;
 
 			m.setting_tag = "";
 				 + '      <setting>' + CRLF ;
