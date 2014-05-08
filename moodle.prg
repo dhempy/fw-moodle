@@ -535,7 +535,7 @@ define class MBZ	as custom
 	
 
 		m.top_limit = ''
-		m.top_limit = 'top 3'
+		m.top_limit = 'top 1'
 		
  		select &top_limit doc , lesson, unit_number, unit, lesson_label, lesson_id, lessons.id, lesson_number ;
 			from dl!lessons ;
@@ -720,7 +720,6 @@ this.Warn("ToDo: lesson fields dependent on =Bulletin?")
 				endif
 				
 
-				this.Log("<h4>Category: " + trim(str(cat.id) )+ ". " + trim(cat.category )+ "</h4>" )
 
 				if (cat.exp_type == 'combine')
 					this.Log(" <b> === Export type: " + cat.exp_type + " === </b>")
@@ -741,15 +740,66 @@ this.Warn("ToDo: lesson fields dependent on =Bulletin?")
 	
 
 	function ExportLessonCategoryBulletins()
+
+		&& this.Log("ExportLessonCategoryBulletins()... Category:  "+ trim(cat.category) )
+	
+&&		m.where_clause = ' and forsch = .T. '		&& Maybe add forstu, forfac fields?  What about forpub?
+		m.where_clause = ''		&& Maybe add forstu, forfac fields?  What about forpub?
+		m.order_by = '	order by bcrs.sort_order, bcrs.bullfirst, b.id '
+		
+&& 
+&&  	select bul_cat.* from dl!bul_cat ;
+&& 		where bul_cat.id in ;
+&& 			(select bul_catid from dl!bul_catcrs where courseid = this.courseid) ;
+&&  		order by sort_order, category ;
+&&  		into cursor cat
+&& 	
+
+		select b.id as bulletinid, b.text, b.url, b.detail, b.include, b.b_css, b.exp_dont, ;
+				bcrs.html, bcrs.bullfirst, bcrs.bulllast ;
+			from dl!bulletin b ;
+				join dl!bul_crs bcrs on b.id = bcrs.bulletinid ;
+			where bcrs.courseid = this.courseid ;
+				and b.bul_catid = cat.id ;
+				and bcrs.bullfirst <= lesson.doc ;
+				and bcrs.bulllast  >= lesson.doc ;
+				and b.exp_dont = .F. ;
+				&where_clause ;
+			 	&order_by ;
+			into cursor Bull
+
+		if (_tally == 0 ) 
+			&& this.Log("Suppressing category with no bulletins.")
+			return 0
+		endif
+
+		this.Log("<h4>Category: " + trim(str(cat.id) )+ ". " + trim(cat.category )+ " (" + alltrim(str(_tally)) + " bulletins)</h4>" )
 		this.CreateLabel(cat.category)
-		this.Warn("ToDo: <b>FIRST: Restore current export into Moodle and test for function!!!</b> ")
-
-		this.Log("ToDo: Suppress irrelevant categories. (no bulletins)")
-
 		this.Warn("ToDo: Export bulletins in cat.")
+
+		m.bull_count = 0
+		
+		scan
+
+			if (Bull.exp_dont)
+				this.Log("Skipping 'don't export' bulletin: " + alltrim(Bull.text) + " bulletins ")
+				loop
+			endif
+
+			m.bull_count = m.bull_count + this.ExportBulletin()
+
+		endscan
+
 					
+		return m.bull_count 
 	endfunc
 
+
+	function ExportBulletin()
+		this.Log("TODO: ExportBulletin() Bulletin: " + trim(str(Bull.bulletinid) )+ ". " + trim(Bull.text) )
+
+		return 1
+	endfunc
 
 
 
@@ -878,7 +928,13 @@ this.Warn("ToDo: lesson fields dependent on =Bulletin?")
 
 
 	procedure Log(m.msg)
-		this.msg = this.msg + m.msg + '<br />' +CRLF
+		if ( 0 < at('</h',m.msg) + at('/div', m.msg) )
+			&& Then we don't need a <br />
+			this.msg = this.msg + m.msg  +CRLF
+		else
+			this.msg = this.msg + m.msg + '<br />' +CRLF
+		endif
+		
 		return m.msg
 	endproc		
 
