@@ -42,16 +42,36 @@
 		
 			<dl>
 
-<!-- 				
+
 				<dt>
-					Export a single quiz:  
+					Export a single lesson:  
 				</dt>
 				<dd>
-					<input name="quizid" value="<%= Request.QueryString('quizid') %>" size="8" maxlength="7" /> 
+					<input name="lessonid" value="<%= Request.QueryString('lessonid') %>" size="4" maxlength="3" /> 
 					<br />
-					<em>e.g. <%=m.courseid%>034</em>  Alternately, find it in Quiz Shop and export from there.
+					<em>e.g. 34</em>  Alternately, find it in Bulletins and export from there. (To Do!)
 				</dd>
- -->
+
+				<dt>
+					<em>OR</em> Export a Range of Lessons:  
+				</dt>
+				<dd>
+					<input name="lesson_first" value="<%= Request.QueryString('lesson_first') %>" size="4" maxlength="3" /> - 
+					<input name="lesson_last" value="<%= Request.QueryString('lesson_last') %>" size="4" maxlength="3" /> 
+					<br />
+					<em>e.g. 21 - 30 </em>
+				</dd>
+
+				<dt>
+					<em>OR</em> Export a Number of Lessons:  
+				</dt>
+				<dd>
+					Export <input name="limit" value="<%= Request.QueryString('limit') %>" size="4" maxlength="3" />  lessons, 
+					starting with lesson <input name="lesson_start" value="<%= Request.QueryString('lesson_start') %>" size="4" maxlength="3" /> 
+					<br />
+					<em>Leave blank for all</em>
+				</dd>
+
 
 			
 				<dt>
@@ -60,9 +80,9 @@
 				
 <!--				
 				<dd>
-					The export can take a long time. Figure about 50 quizzes per minute. Exporting more than 50-100 quizzes
+					The export can take a long time. Figure about 50 lessonzes per minute. Exporting more than 50-100 lessonzes
 					at once may run into a "file too large" error, so consider exporting your files in chunks. 
-					Importing these files into Moodle takes *much* longer, perhaps one quiz per minute, so plan
+					Importing these files into Moodle takes *much* longer, perhaps one lesson per minute, so plan
 					accordingly.
 				</dd>
 -->

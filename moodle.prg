@@ -152,7 +152,7 @@ define class MBZ	as custom
 				m.filename_part = m.quiz_first + '-' + m.quiz_last  + iif(empty(m.top_qz_limit), '', '+' + strtran(m.top_qz_limit,' ','_'))
 				
 			case not empty (m.quiz_first) and not empty (m.top_qz_limit)
-				m.where_clause = m.where_clause + ' and quizid > "' + m.quiz_first  + '" '
+				m.where_clause = m.where_clause + ' and quizid >= "' + m.quiz_first  + '" '
 				m.filename_part = m.quiz_first + '+' + strtran(m.top_qz_limit,' ','_')
 
 		endcase
@@ -535,16 +535,50 @@ define class MBZ	as custom
 		this.Log("Exporting " + alltrim(str(ThisCrs.last_less)) + " lessons.")
 	
 
-		m.top_limit = ''
-		m.top_limit = 'top 1'
-		
- 		select &top_limit doc , lesson, unit_number, unit, lesson_label, lesson_id, lessons.id, lesson_number ;
+	
+		if empty (Request.QueryString('limit'))
+				m.top_lesson_limit = '' 
+		else 
+				m.top_lesson_limit = 'top ' + alltrim(str(val(Request.QueryString('limit'))))
+		endif
+
+
+		m.where_clause  = ' lessons.courseid = "' + this.courseid  + '" '
+		m.lessonid     = alltrim(str(val(Request.QueryString('lessonid'))     ))
+		m.lesson_first = alltrim(str(val(Request.QueryString('lesson_first')) ))
+		m.lesson_last  = alltrim(str(val(Request.QueryString('lesson_last'))  ))
+		m.lesson_start = alltrim(str(val(Request.QueryString('lesson_start')) ))
+
+		m.filename_part = ''
+
+		do case 
+			case not empty (Request.QueryString('lessonid')) 
+				m.where_clause = m.where_clause + ' and lessons.lesson_number == ' + m.lessonid  + ' '
+				m.filename_part = m.lessonid 
+
+			case not empty (Request.QueryString('lesson_first')) and not empty (Request.QueryString('lesson_last'))
+				m.where_clause = m.where_clause + ' and lessons.lesson_number between ' + m.lesson_first + ' and ' + m.lesson_last + ' '
+				m.filename_part = m.lesson_first + '-' + m.lesson_last  + iif(empty(m.top_lesson_limit), '', '+' + strtran(m.top_lesson_limit,' ','_'))
+				
+			case not empty (Request.QueryString('lesson_start')) 
+				m.where_clause = m.where_clause + ' and lessons.lesson_number >= ' + m.lesson_start  + ' '
+				m.filename_part = m.lesson_first + '+' + strtran(m.top_lesson_limit,' ','_')
+
+		endcase
+	
+
+		this.Log ([Exporting &top_lesson_limit lessonzes where &where_clause])
+
+
+ 		select &top_lesson_limit doc , lesson, unit_number, unit, lesson_label, lesson_id, lessons.id, lesson_number ;
 			from dl!lessons ;
 			left outer join unit on unit.id = lessons.unit_id ;
-			where lessons.courseid==m.courseid ;
+			where &where_clause ; 
 			into cursor lesson ;
 			order by doc
 	
+
+		this.Log ([Found ] + alltrim(str(_tally)) + [ lessonzes...])
 			
 		this.section_count = 0
 		
