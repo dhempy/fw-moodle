@@ -31,6 +31,7 @@ define class MBZ	as custom
 	backup_filename = ''
 	backup_zipname = ''
 	template_folder = ''	
+	filename_part = ''	
 	current_activity_id = 1000
 	question_list = ''
 	section_points = 0 && only relevant to matching sections
@@ -62,7 +63,7 @@ define class MBZ	as custom
       * Generates intermediate .xml files and zips to create a Moodle .mbz file. 
       * This is probably the only function you need to call from outside to export a course.
 
-		this.Log(	"ExportMoodleCourse starting for " + this.courseid + ": " + trim(thiscrs.coursename) + " to folder [" + this.backup_folder + "]" )
+		this.Log(	"ExportMoodleCourse starting for " + this.courseid + ": " + trim(thiscrs.coursename)  )
 
 		&& Preserve output buffer and state...we'll be stomping all over the output buffer.
 		local m.existing_content, m.old_buffer_state
@@ -93,7 +94,8 @@ define class MBZ	as custom
 		this.MakeFile("roles.xml",      "course")
 		this.MakeFile("inforef.xml",    "course")
 		
-		
+
+		this.ZipFiles()		
 		
 
 		this.Log("Saved export files to: <tt>" + this.backup_folder + "</tt>") 
@@ -139,20 +141,20 @@ define class MBZ	as custom
 		m.quiz_first = left(Request.QueryString('quiz_first'),7)
 		m.quiz_last  = left(Request.QueryString('quiz_last'),7)
 
-		m.filename_part = ''
+		this.filename_part = 'all'
 
 		do case 
 			case not empty (m.quizid) 
 				m.where_clause = m.where_clause + ' and quizid = "' + m.quizid  + '" '
-				m.filename_part = m.quizid 
+				this.filename_part = m.quizid 
 
 			case not empty (m.quiz_first) and not empty (m.quiz_last)
 				m.where_clause = m.where_clause + ' and quizid between "' + m.quiz_first + '" and "' + m.quiz_last + '" '
-				m.filename_part = m.quiz_first + '-' + m.quiz_last  + iif(empty(m.top_qz_limit), '', '+' + strtran(m.top_qz_limit,' ','_'))
+				this.filename_part = m.quiz_first + '-' + m.quiz_last  + iif(empty(m.top_qz_limit), '', '+' + strtran(m.top_qz_limit,' ','_'))
 				
 			case not empty (m.quiz_first) and not empty (m.top_qz_limit)
 				m.where_clause = m.where_clause + ' and quizid >= "' + m.quiz_first  + '" '
-				m.filename_part = m.quiz_first + '+' + strtran(m.top_qz_limit,' ','_')
+				this.filename_part = m.quiz_first + '+' + strtran(m.top_qz_limit,' ','_')
 
 		endcase
 	
@@ -195,7 +197,7 @@ define class MBZ	as custom
 		
 		
 
-		m.filename =  strtran("fw_questions_"+ m.filename_part +".xml", ' ', '-')
+		m.filename =  strtran("fw_questions_"+ this.filename_part +".xml", ' ', '-')
 		
 		this.Log ("Exported " + alltrim(str(m.qscount)) + " questions for " + alltrim(str(m.qzcount)) + " quizzes to <b>" + m.filename + "</b>")
 
@@ -375,6 +377,8 @@ define class MBZ	as custom
 			this.question_list = this.question_list + m.question
 			
 	endfunc
+
+
 	
 
   function SetFolders(m.subfolder, m.sub_subfolder)
@@ -389,23 +393,26 @@ define class MBZ	as custom
 		endif
 		
 
-		if empty(m.sub_subfolder)
-			m.sub_subfolder = ThisCrs.courseid
-		endif
 				
+		this.backup_folder   = "\script_data\moodle\" 
+		this.MakePath(this.backup_folder)	&& THis is optimistic, as we probably lack permissions. Do that on your own.
 
-		this.MakePath("\script_data\moodle")	&& THis is optimistic, as we probably lack permissions. Do that on your own.
-		this.MakePath("\script_data\moodle\" + m.subfolder) 	&& THis is optimistic, as we probably lack permissions. Do that on your own.
-		this.backup_folder   = "\script_data\moodle\" + m.subfolder + "\" + m.sub_subfolder
-		this.backup_filename = m.sub_subfolder + ".mbz"
+		this.backup_folder   = this.backup_folder + m.subfolder + "\" 
+		this.MakePath(this.backup_folder)	
+
+		this.backup_folder   = this.backup_folder + ThisCrs.courseid + "\" 
+		this.MakePath(this.backup_folder)	
+
+		if not empty(m.sub_subfolder)
+			this.backup_folder = this.backup_folder + m.sub_subfolder + "\"
+			this.MakePath(this.backup_folder)	
+		endif
 
 		m.backup_folder = this.backup_folder
 		
-		this.Log("rmdir /s /q &backup_folder   (command skipped) ")
-
+&&		this.Log("rmdir /s /q &backup_folder   (command skipped) ")
 && 		run rmdir /s /q &backup_folder   && This causes bizarre errors.
-
-		this.MakePath(this.backup_folder)
+&& 		this.MakePath(this.backup_folder)
   
 
 
@@ -414,6 +421,23 @@ define class MBZ	as custom
 		this.template_folder = '/db/moodle/template/' + m.subfolder			&& assumes relative to the called script, probably under /dl/intranet...
 
 		this.Log("Saving export files to: <tt>" + this.backup_folder + "</tt>") 
+		
+  endfunc
+
+
+  function ZipFiles()
+  	&& Compresses all generated files into a single zip (or .mbz) file
+ 
+ 		this.Log("TODO: Zipping all files in <tt>" + this.backup_folder + "</tt> into zip file <tt>" + this.filename_part + "</tt>."  )
+ 		
+ 		m.zip_cmd = "C:\Progra~1\7-Zip\7z.exe a -r " + this.backup_folder + "..\" + this.filename_part + ".zip " + this.backup_folder + "*.*"
+
+ 		this.Log("run &zip_cmd ")
+ 		run &zip_cmd
+ 		
+&&		this.Log("rmdir /s /q &backup_folder   (command skipped) ")
+&& 		run rmdir /s /q &backup_folder   && This causes bizarre errors.
+&&		this.MakePath(this.backup_folder)
 		
   endfunc
 
@@ -554,27 +578,27 @@ define class MBZ	as custom
 		m.lesson_last  = alltrim(str(val(Request.QueryString('lesson_last'))  ))
 		m.lesson_start = alltrim(str(val(Request.QueryString('lesson_start')) ))
 
-		m.filename_part = ''
+		this.filename_part = ThisCrs.courseid + '-'
 
 		do case 
 			case not empty (Request.QueryString('lessonid')) 
 				m.where_clause = m.where_clause + ' and lessons.lesson_number == ' + m.lessonid  + ' '
-				m.filename_part = m.lessonid 
+				this.filename_part = this.filename_part + m.lessonid 
 
 			case not empty (Request.QueryString('lesson_first')) and not empty (Request.QueryString('lesson_last'))
 				m.where_clause = m.where_clause + ' and lessons.lesson_number between ' + m.lesson_first + ' and ' + m.lesson_last + ' '
-				m.filename_part = m.lesson_first + '-' + m.lesson_last  + iif(empty(m.top_lesson_limit), '', '+' + strtran(m.top_lesson_limit,' ','_'))
+				this.filename_part = this.filename_part + m.lesson_first + '-' + m.lesson_last  + iif(empty(m.top_lesson_limit), '', '+' + strtran(m.top_lesson_limit,' ','_'))
 				
 			case not empty (Request.QueryString('lesson_start')) 
 				m.where_clause = m.where_clause + ' and lessons.lesson_number >= ' + m.lesson_start  + ' '
-				m.filename_part = m.lesson_first + '+' + strtran(m.top_lesson_limit,' ','_')
+				this.filename_part = this.filename_part + m.lesson_first + '+' + strtran(m.top_lesson_limit,' ','_')
 
 		endcase
 	
 
 		this.Log ([Exporting &top_lesson_limit lessonzes where &where_clause])
 
-	  this.SetFolders('course' , ThisCrs.courseid + "\" + ThisCrs.courseid + '-' + m.filename_part)
+	  this.SetFolders('course' , this.filename_part)
 
 
  		select &top_lesson_limit doc , lesson, unit_number, unit, lesson_label, lesson_id, lessons.id, lesson_number ;
@@ -882,7 +906,7 @@ this.Warn("ToDo: lesson fields dependent on =Bulletin?")
 	      + '    <moduleid>' + m.activityid + '</moduleid>' +CRLF ;
 	      + '    <sectionid>' + m.sectionid + '</sectionid>' +CRLF ;
 	      + '    <modulename>label</modulename>' +CRLF +CRLF;
-	      + '    <title><![CDATA[LABEL TITLE: ' + m.label_name +  ']]></title>' +CRLF ;
+	      + '    <title><![CDATA[' + m.label_name +  ']]></title>' +CRLF ;
 	      + '    <directory>activities/label_' + m.activityid + '</directory>' +CRLF ;
 	      + '  </activity>' +CRLF
 
