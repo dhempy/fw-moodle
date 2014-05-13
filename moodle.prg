@@ -72,7 +72,6 @@ define class MBZ	as custom
 		Response.Clear
 
 
-	  this.SetFolders('course')
 
 		this.ScanLessons()	&& generates all section files and populates vars used in top-level files.
 
@@ -378,7 +377,7 @@ define class MBZ	as custom
 	endfunc
 	
 
-  function SetFolders(m.subfolder)
+  function SetFolders(m.subfolder, m.sub_subfolder)
  
 		&& param m.subfolder, if given, is the alternate folder name, for both template and backup folders.
 
@@ -388,15 +387,21 @@ define class MBZ	as custom
 			this.Log("Error: no subfolder given to this.SetFolders()")
 			return
 		endif
+		
+
+		if empty(m.sub_subfolder)
+			m.sub_subfolder = ThisCrs.courseid
+		endif
+				
 
 		this.MakePath("\script_data\moodle")	&& THis is optimistic, as we probably lack permissions. Do that on your own.
 		this.MakePath("\script_data\moodle\" + m.subfolder) 	&& THis is optimistic, as we probably lack permissions. Do that on your own.
-		this.backup_folder   = "\script_data\moodle\" + m.subfolder + "\" + ThisCrs.courseid
-		this.backup_filename = ThisCrs.courseid + ".mbz"
+		this.backup_folder   = "\script_data\moodle\" + m.subfolder + "\" + m.sub_subfolder
+		this.backup_filename = m.sub_subfolder + ".mbz"
 
 		m.backup_folder = this.backup_folder
 		
-		this.Log("rmdir /s /q &backup_folder")
+		this.Log("rmdir /s /q &backup_folder   (command skipped) ")
 
 && 		run rmdir /s /q &backup_folder   && This causes bizarre errors.
 
@@ -568,6 +573,8 @@ define class MBZ	as custom
 	
 
 		this.Log ([Exporting &top_lesson_limit lessonzes where &where_clause])
+
+	  this.SetFolders('course' , ThisCrs.courseid + "\" + ThisCrs.courseid + '-' + m.filename_part)
 
 
  		select &top_lesson_limit doc , lesson, unit_number, unit, lesson_label, lesson_id, lessons.id, lesson_number ;
