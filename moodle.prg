@@ -435,6 +435,8 @@ define class MBZ	as custom
  		this.Log("run &zip_cmd ")
  		run &zip_cmd
  		
+ 		&& trivial change 
+ 		
 &&		this.Log("rmdir /s /q &backup_folder   (command skipped) ")
 && 		run rmdir /s /q &backup_folder   && This causes bizarre errors.
 &&		this.MakePath(this.backup_folder)
