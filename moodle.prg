@@ -432,7 +432,7 @@ define class MBZ	as custom
  		
  		m.zip_cmd = "C:\Progra~1\7-Zip\7z.exe a -r " + this.backup_folder + "..\" + this.filename_part + ".zip " + this.backup_folder + "*.*"
 
- 		&& TODO - consider using %ProgramFiles% env var instead of hard-coded path.  
+ 		&& TODO - consider using %ProgramFiles% env var instead of hard-coded path.   
 
  		this.Log("run &zip_cmd ")
  		run &zip_cmd
