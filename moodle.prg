@@ -432,6 +432,8 @@ define class MBZ	as custom
  		
  		m.zip_cmd = "C:\Progra~1\7-Zip\7z.exe a -r " + this.backup_folder + "..\" + this.filename_part + ".zip " + this.backup_folder + "*.*"
 
+ 		&& TODO - consider using %ProgramFiles% env var instead of hard-coded path.   
+
  		this.Log("run &zip_cmd ")
  		run &zip_cmd
  		
@@ -642,6 +644,7 @@ define class MBZ	as custom
 			endif
 
 			m.sectionid = alltrim(str(lesson.lesson_id)) 
+			m.sectionnumber = alltrim(str(lesson.lesson_number))
 			
 			m.section_tag = "";
 	      + '  <section>' +CRLF ;
@@ -699,6 +702,7 @@ define class MBZ	as custom
 
 			m.sectionid = alltrim(str(lesson.lesson_id)) 
 			m.activityid = this.NewActivityID()
+			m.sectionnumber = alltrim(str(lesson.lesson_number))
 			
 			m.activity_tag = "";
 	      + '  <activity>' +CRLF ;
@@ -877,6 +881,7 @@ this.Warn("ToDo: lesson fields dependent on =Bulletin?")
 
 			m.sectionid = alltrim(str(lesson.lesson_id)) 
 			m.activityid = this.NewActivityID()
+			m.sectionnumber = alltrim(str(lesson.lesson_number))
 
 			m.label_text = alltrim(m.text)
 			if empty(m.name)
