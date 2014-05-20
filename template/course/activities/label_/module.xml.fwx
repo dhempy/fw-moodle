@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module id="<%= m.activityid %>" version="2012112900">
   <modulename>label</modulename>
-  <sectionid><%=lesson.lesson_id%></sectionid>  <!--   lesson.lesson_id -->
   <sectionid><%= m.sectionid %></sectionid>  <!-- m.sectionid -->
-  <sectionnumber><%=lesson.lesson_number%></sectionnumber>
+  <sectionnumber><%=m.sectionnumber %></sectionnumber>
   <idnumber>$@NULL@$</idnumber>
   <added><%= EpochDate() %></added>
   <score>0</score>
