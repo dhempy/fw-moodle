@@ -3,7 +3,7 @@
   <modulename>label</modulename>
   <sectionid><%=lesson.lesson_id%></sectionid>  <!--   lesson.lesson_id -->
   <sectionid><%= m.sectionid %></sectionid>  <!-- m.sectionid -->
-  <sectionnumber>1</sectionnumber>
+  <sectionnumber><%=lesson.lesson_number%></sectionnumber>
   <idnumber>$@NULL@$</idnumber>
   <added><%= EpochDate() %></added>
   <score>0</score>

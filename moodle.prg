@@ -642,6 +642,7 @@ define class MBZ	as custom
 			endif
 
 			m.sectionid = alltrim(str(lesson.lesson_id)) 
+			m.sectionnumber = alltrim(str(lesson.lesson_number))
 			
 			m.section_tag = "";
 	      + '  <section>' +CRLF ;
@@ -699,6 +700,7 @@ define class MBZ	as custom
 
 			m.sectionid = alltrim(str(lesson.lesson_id)) 
 			m.activityid = this.NewActivityID()
+			m.sectionnumber = alltrim(str(lesson.lesson_number))
 			
 			m.activity_tag = "";
 	      + '  <activity>' +CRLF ;
@@ -877,6 +879,7 @@ this.Warn("ToDo: lesson fields dependent on =Bulletin?")
 
 			m.sectionid = alltrim(str(lesson.lesson_id)) 
 			m.activityid = this.NewActivityID()
+			m.sectionnumber = alltrim(str(lesson.lesson_number))
 
 			m.label_text = alltrim(m.text)
 			if empty(m.name)
