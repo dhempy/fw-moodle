@@ -918,16 +918,47 @@ this.Warn("ToDo: lesson fields dependent on =Bulletin?")
 && &&			m.label_text = strconv(m.label_text, 9)	&& Convert to UTF-8
 		
 
+		* If m.dest_fname is empty(), don't create the output file.  (STill returns output)
+		*   In this case, you need to spec the src_fname, such as MakeFile('', '', 'my_template.xml')
+
+
+
+			m.activity_folder =  "activities\label_" + m.activityid 
 			
+			this.ActivityTag(m.activityid, m.sectionid, 'label', m.label_name, m.activity_folder)
+			this.SettingTag (m.activityid, 'label')
+			
+			this.MakeFile("inforef.xml" , m.activity_folder, .F., "activities\label_")
+			this.MakeFile("label.xml"   , m.activity_folder, .F., "activities\label_")
+			this.MakeFile("filters.xml" , m.activity_folder, .F., "activities\label_")
+			this.MakeFile("grades.xml"  , m.activity_folder, .F., "activities\label_")
+			this.MakeFile("module.xml"  , m.activity_folder, .F., "activities\label_")
+			this.MakeFile("roles.xml"   , m.activity_folder, .F., "activities\label_")
+
+	endfunc
+
+
+	function ActivityTag(m.activityid, m.sectionid, 'label', m.label_name, m.activity_folder)
 			m.activity_tag = "";
 	      + '  <activity>' +CRLF ; 
 	      + '    <moduleid>' + m.activityid + '</moduleid>' +CRLF ;
 	      + '    <sectionid>' + m.sectionid + '</sectionid>' +CRLF ;
 	      + '    <modulename>label</modulename>' +CRLF +CRLF;
 	      + '    <title><![CDATA[' + m.label_name +  ']]></title>' +CRLF ;
-	      + '    <directory>activities/label_' + m.activityid + '</directory>' +CRLF ;
+	      + '    <directory>' + strtran(m.activity_folder, '\', '/')  + '</directory>' +CRLF ;
 	      + '  </activity>' +CRLF
 
+			if isnull(m.activity_tag) 
+				m.activity_tag = "WARNING: null field in bulletins " + m.activityid + " activity tag. Nothing to export."+CRLF
+				this.Warn(m.activity_tag)
+			endif
+
+	    this.activity_list = this.activity_list + m.activity_tag
+	endfunc
+
+
+
+	function SettingTag(m.activityid, 'label')
 			m.setting_tag = "";
 				 + '      <setting>' + CRLF ;
 		     + '        <level>activity</level>' + CRLF ;
@@ -942,27 +973,15 @@ this.Warn("ToDo: lesson fields dependent on =Bulletin?")
 		     + '        <value>0</value>' + CRLF ;
 		     + '      </setting>' + CRLF 
 
-	      
-			if isnull(m.activity_tag) or isnull(m.setting_tag)
+
+			if isnull(m.setting_tag)
 				m.activity_tag = "WARNING: null field in bulletins " + m.activityid + ". Nothing to export."+CRLF
 				this.Warn(m.activity_tag)
 			endif
 			
-	    this.activity_list = this.activity_list + m.activity_tag
 	    this.setting_list = this.setting_list + m.setting_tag
-
-			m.activity_folder =  "activities\label_" + m.activityid 
-			
-
-			
-			this.MakeFile("inforef.xml" , m.activity_folder, .F., "activities\label_")
-			this.MakeFile("label.xml"   , m.activity_folder, .F., "activities\label_")
-			this.MakeFile("filters.xml" , m.activity_folder, .F., "activities\label_")
-			this.MakeFile("grades.xml"  , m.activity_folder, .F., "activities\label_")
-			this.MakeFile("module.xml"  , m.activity_folder, .F., "activities\label_")
-			this.MakeFile("roles.xml"   , m.activity_folder, .F., "activities\label_")
-
-	endfunc
+	endfunc	
+	
 	
 	
   *********************************************************************************
