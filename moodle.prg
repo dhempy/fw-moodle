@@ -850,7 +850,7 @@ this.Warn("ToDo: lesson fields dependent on =Bulletin?")
 		endif
 
 		this.Log("<h4>Category: " + trim(str(cat.id) )+ ". " + trim(cat.category )+ " (" + alltrim(str(_tally)) + " bulletins)</h4>" )
-		this.CreateLabel("<h3>"+alltrim(cat.category)+ "</h3>", 0)
+		this.CreateLabel("<h3>"+alltrim(cat.category)+ "</h3>", 0) 
 
 		m.bull_count = 0
 		
