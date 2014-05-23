@@ -428,7 +428,9 @@ define class MBZ	as custom
   function ZipFiles()
   	&& Compresses all generated files into a single zip (or .mbz) file
  
- 		this.Log("TODO: Zipping all files in <tt>" + this.backup_folder + "</tt> into zip file <tt>" + this.filename_part + "</tt>."  )
+ 		this.Log("Zipping all files in <tt>" + this.backup_folder + "</tt> into zip file <tt>" + this.filename_part + "</tt>."  )
+ 		
+  	Server.AddScriptTimeout(10, .T.)
  		
  		m.zip_cmd = "C:\Progra~1\7-Zip\7z.exe a -r " + this.backup_folder + "..\" + this.filename_part + ".zip " + this.backup_folder + "*.*"
 
@@ -619,7 +621,9 @@ define class MBZ	as custom
 		
 		scan
 			this.Log("<div class='box'> <h2>Lesson " + alltrim(str(lesson.lesson_id)) + ": " + alltrim(lesson.id)	 + " | "+ alltrim(lesson.lesson) + "</h2>")
-
+			
+   		Server.AddScriptTimeout(10, .T.)
+   		
 			this.ExportLesson()
 			this.ExportLessonCategories()			&& And the bulletins therein...
 		
@@ -846,8 +850,7 @@ this.Warn("ToDo: lesson fields dependent on =Bulletin?")
 		endif
 
 		this.Log("<h4>Category: " + trim(str(cat.id) )+ ". " + trim(cat.category )+ " (" + alltrim(str(_tally)) + " bulletins)</h4>" )
-		this.CreateLabel("<h3>"+alltrim(cat.category)+ "</h3>")
-		this.Warn("ToDo: Export bulletins in cat.")
+		this.CreateLabel("<h3>"+alltrim(cat.category)+ "</h3>", 0)
 
 		m.bull_count = 0
 		
@@ -869,7 +872,7 @@ this.Warn("ToDo: lesson fields dependent on =Bulletin?")
 
 	function ExportBulletin()
 		this.Log("ExportBulletin(): " + trim(str(Bull.bulletinid) )+ ". " + trim(Bull.text) )
-		this.CreateLabel(bull.text)
+		this.CreateLabel(bull.text, 1)
 		
 		this.Log("TODO: Parse for embedded links." )
 		return 1
@@ -877,12 +880,20 @@ this.Warn("ToDo: lesson fields dependent on =Bulletin?")
 
 
 
-	function CreateLabel(m.text, m.name)	
+	function CreateLabel(m.text, m.indent_level, m.name)	
 
+			&& Can't use params in .fwx templates apparantly, so create redundant local vars:
+			
 			m.sectionid = alltrim(str(lesson.lesson_id)) 
 			m.activityid = this.NewActivityID()
 			m.sectionnumber = alltrim(str(lesson.lesson_number))
 
+			if empty(m.indent_level)
+				m.indent = 0
+			else
+				m.indent = m.indent_level
+			endif
+				
 			m.label_text = alltrim(m.text)
 			if empty(m.name)
 				m.label_name = m.label_text

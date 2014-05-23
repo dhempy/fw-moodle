@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module id="<%= m.activityid %>" version="2012112900">
   <modulename>label</modulename>
-  <sectionid><%= m.sectionid %></sectionid>  <!-- m.sectionid -->
+  <sectionid><%= m.sectionid %></sectionid> 
   <sectionnumber><%=m.sectionnumber %></sectionnumber>
   <idnumber>$@NULL@$</idnumber>
   <added><%= EpochDate() %></added>
   <score>0</score>
-  <indent>0</indent>
+  <indent><%= m.indent %></indent>
   <visible>1</visible>
   <visibleold>1</visibleold>
   <groupmode>0</groupmode>
