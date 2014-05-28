@@ -9,7 +9,7 @@
     <legacyfiles>0</legacyfiles>
     <legacyfileslast>$@NULL@$</legacyfileslast>
     <display>5</display>
-    <displayoptions>a:2:{s:12:"printheading";s:1:"1";s:10:"printintro";s:1:"0";}</displayoptions>
+    <displayoptions>a:2:{s:12:"printheading";s:1:"0";s:10:"printintro";s:1:"1";}</displayoptions>
     <revision>1</revision>
     <timemodified><%= EpochDate() %></timemodified>
   </page>

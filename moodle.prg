@@ -1054,30 +1054,22 @@ define class MBZ	as custom
 			endif
 				
 			m.page_text = alltrim(m.text)
+			m.page_text = strtran(m.page_text, '[', '' )   
+			m.page_text = strtran(m.page_text, ']', '' )   
+
 			if empty(m.name)
 				m.page_name = m.page_text
 			else
 				m.page_name = m.name
 			endif
-		
+
+			if (len(m.page_name) >= 250) 
+				m.page_name = left(m.page_name,250) + "..."
+				this.log('Truncating name of ' + m.moduleid + ' text to 75 characters. (Actual content not affected) ' + alltrim(str(len(m.page_name))) + ' chars in: ' + m.page_name)
+			endif
+			
 			m.page_content = m.content
-
-			m.page_name = strtran(strtran(m.page_name, '>', '}' ), '<', '{' )   && don't really want links in names, truncating can leave broken tags.
-			m.page_name = strtran(m.page_name, '[', '' )   
-			m.page_name = strtran(m.page_name, ']', '' )   
 			
-			&& this.Log("CreatePage(" m.moduleid + "." + m.page_text + ") (" + alltrim(str(len(m.page_text))) + ' chars' )
-
-&& I don't think there's a limit for page name length...
-&&			if (len(m.page_name) >= 75) 
-&&				m.page_name = left(m.page_name,75)
-&&				this.log('Truncating name of ' + m.moduleid + ' text to 75 characters. (Actual content not affected) ' + alltrim(str(len(m.page_name))) + ' chars in: ' + m.page_name)
-&&			endif
-			
-
-		* If m.dest_fname is empty(), don't create the output file.  (STill returns output)
-		*   In this case, you need to spec the src_fname, such as MakeFile('', '', 'my_template.xml')
-
 			m.activity_folder =  "activities\page_" + m.moduleid 
 			
 			this.ActivityTag(m.moduleid, m.sectionid, 'page', m.page_name, m.activity_folder)
