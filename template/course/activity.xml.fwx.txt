@@ -1,7 +1,0 @@
-  <activity> 
-    <moduleid><%= m.activityid %></moduleid>
-    <sectionid><%= m.sectionid %></sectionid>
-    <modulename>label</modulename>
-    <title><![CDATA[<%= m.label_name %>]]></title>
-    <directory>activities/label_<%= m.activityid %></directory>
-  </activity>

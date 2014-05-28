@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<activity id="148" moduleid="<%= m.activityid %>" modulename="label" contextid="723">
+<activity id="148" moduleid="<%= m.moduleid %>" modulename="label" contextid="723">
   <label id="148">
     <name><![CDATA[<%= m.label_name %>]]></name> 	
-    <intro>
-    	<![CDATA[<%= m.label_text %>]]>
-   	</intro>
+    <intro><![CDATA[<%= m.label_text %>]]></intro>
     <introformat>1</introformat>
     <timemodified><%= EpochDate() %></timemodified>
   </label>

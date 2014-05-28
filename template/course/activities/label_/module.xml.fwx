@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module id="<%= m.activityid %>" version="2012112900">
+<module id="<%= m.moduleid %>" version="2012112900">
   <modulename>label</modulename>
   <sectionid><%= m.sectionid %></sectionid> 
   <sectionnumber><%=m.sectionnumber %></sectionnumber>

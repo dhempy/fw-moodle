@@ -831,7 +831,7 @@ this.Warn("ToDo: lesson fields dependent on =Bulletin?")
 &&  		into cursor cat
 && 	
 
-		select b.id as bulletinid, b.text, b.url, b.detail, b.include, b.b_css, b.exp_dont, ;
+		select b.id as bulletinid, b.text, b.url, b.detail, b.b_css, b.exp_dont, ;
 				bcrs.html, bcrs.bullfirst, bcrs.bulllast ;
 			from dl!bulletin b ;
 				join dl!bul_crs bcrs on b.id = bcrs.bulletinid ;
@@ -872,11 +872,107 @@ this.Warn("ToDo: lesson fields dependent on =Bulletin?")
 
 	function ExportBulletin()
 		this.Log("ExportBulletin(): " + trim(str(Bull.bulletinid) )+ ". " + trim(Bull.text) )
-		this.CreateLabel(bull.text, 1)
+
+		this.Log("TODO(): call GenHTML to populate links")
+		m.text = this.GenHTML(Bull.text, bull.url, bull.detail)
 		
-		this.Log("TODO: Parse for embedded links." )
+		if isnull(Bull.detail) or empty(Bull.detail)
+			this.CreateLabel(bull.text, 1)
+			this.Log("TODO: Parse for embedded links." )
+		else
+			this.CreatePage(bull.text, 1)
+		endif
+		
 		return 1
 	endfunc
+
+
+
+	&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+	&& Generates html from text and url  (Lifted from ../common/bulletin.prg 5/23/2014 15:51:59 )
+	&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+	function GenHTML(m.text, m.url, m.detail)
+	&& todo: add bulletinid and detail to params...generate link to detail page as needed.
+	&& todo: implement include.
+	
+			&& text	= 'Visit the [Wierd Physics Site] for some ideas.'
+			&& url	= 'http://phys.com'
+			&& m.detail = if empty(url) and not empty(detail), link to detail.
+			&&		note...you don't have to pass in the whole detail...simply length(detail) or (not empty(detail)) will do.
+	
+			&& returns: html = 'Visit the <a href="http://phys.com">Wierd Physics Site</a> for some ideas.'
+	
+	&& Comenting out the quote replacer 10/22/2003 11:53PM -dave.  Not sure why I ever thought this was a good idea.
+	&&	m.text = strtran(m.text, '"', '&quot;')	
+	
+		&& m.msg = m.msg + 'detail is ' + iif(empty(m.detail), 'EMPTY', 'NOT EMPTY') + '<br />'
+	
+	*	m.msg = m.msg + 'PRE: url is ' + m.url + '<br />' +CRLF
+	
+			&& Link prefix to retrieve private documents:
+			&& This URL also appears in /common/common.prg ... check there if you need to change this.
+			
+	*	&& This is how it should be...once we get VFP upgraded above 6.0:
+	*	m.url = strtran(m.url, '<<private>>', ;
+	*		URL('Get',lower(login.level)) + '?courseid='+m.courseid+'&'+'name=' , ;
+	*		-1, -1, 2 )	&& -1, -1, 2 indicates case insensitive
+	
+		&& Do this for now...until we get VFP upgraded above 6.0:
+		m.url = strtran(m.url, '<<private>>', ;
+			URL('Get',lower(login.level)) + '?courseid='+m.courseid+'&'+'name=' )
+		m.url = strtran(m.url, '<<Private>>', ;
+			URL('Get',lower(login.level)) + '?courseid='+m.courseid+'&'+'name=' )
+		m.url = strtran(m.url, '<<PRIVATE>>', ;
+			URL('Get',lower(login.level)) + '?courseid='+m.courseid+'&'+'name=' )
+	
+		this.Log("Todo: what to do about Private links?")
+	
+	*	m.msg = m.msg + 'MID: url is ' + m.url + '<br />' +CRLF
+		
+		do case 
+			case not empty(m.url)
+				&& Remember: single-equal is a head string match, not a full string match!
+				do case 
+					case (m.url = "http:") or (m.url = "https:") 
+						m.link = trim(m.url)
+					case (m.url = '/') 
+						m.link = "http://" + Request.ServerVariables("SERVER_NAME") + trim(m.url)
+						this.Warn("Link to local file: " + m.link)
+					otherwise 
+						m.link = "http://" + Request.ServerVariables("SERVER_NAME") + "/" + trim(thiscrs.webpath) + '/' + trim(m.url)
+						this.Warn("Link to local file: " + m.link)
+				endcase	
+			case not empty(m.detail)
+				m.link = "Oops!  This bulletin has a detail page.  We shouldn't be here." 
+				this.Warn("Oops!  This bulletin has a detail page.  We shouldn't be here." )
+			otherwise
+				m.link = ''
+		endcase
+	
+	*	m.msg = m.msg + 'POST: link is ' + m.link + '<br />'  +CRLF
+		
+	
+		
+		if (empty(m.link))	
+			m.changed_html = m.text
+		else
+			if (0 < at('[', m.text) )
+				&& m.msg = m.msg + 'convert [...] to a link.<br />'+CRLF
+				m.changed_html = strtran(m.text, '[', '<a href="' + m.link + '">', 1,1)
+				m.changed_html = strtran(m.changed_html, ']', '</a>', 1,1)
+			else
+				&& m.msg= m.msg + 'wrap entire string in a link.<br />'+CRLF
+				m.changed_html = '<a href="' + m.link + '">' ;
+					+ m.text + '</a>'
+			endif
+		endif
+
+		&& We're not exporting include references.		
+	
+	&&	m.msg = m.msg + "FIN: html is " + m.changed_html + "<br />" + CRLF
+	
+		return m.changed_html
+	endproc
 
 
 
@@ -911,7 +1007,7 @@ this.Warn("ToDo: lesson fields dependent on =Bulletin?")
 			endif
 			
 &&&&&&&&& These conversions not needed - the real answer is to embed in a <![CDATA[ ..... ]]> tag.
- &&			m.label_text = strtran(m.label_text, '&', '&'+'amp;')	&& Moodle's (PHP's?) XML parser squawks on naked ampersands.  This strtran must come first.
+&&			m.label_text = strtran(m.label_text, '&', '&'+'amp;')	&& Moodle's (PHP's?) XML parser squawks on naked ampersands.  This strtran must come first.
 && 			m.label_text = strtran(m.label_text, '<', '&'+'lt;')
 && 			m.label_text = strtran(m.label_text, '>', '&'+'gt;')
 && 			
@@ -921,7 +1017,73 @@ this.Warn("ToDo: lesson fields dependent on =Bulletin?")
 		* If m.dest_fname is empty(), don't create the output file.  (STill returns output)
 		*   In this case, you need to spec the src_fname, such as MakeFile('', '', 'my_template.xml')
 
+			m.activity_folder =  "activities\label_" + m.activityid 
+			
+			this.ActivityTag(m.activityid, m.sectionid, 'label', m.label_name, m.activity_folder)
+			this.SettingTag (m.activityid, 'label')
+			
+			this.MakeFile("inforef.xml" , m.activity_folder, .F., "activities\label_")
+			this.MakeFile("label.xml"   , m.activity_folder, .F., "activities\label_")
+			this.MakeFile("filters.xml" , m.activity_folder, .F., "activities\label_")
+			this.MakeFile("grades.xml"  , m.activity_folder, .F., "activities\label_")
+			this.MakeFile("module.xml"  , m.activity_folder, .F., "activities\label_")
+			this.MakeFile("roles.xml"   , m.activity_folder, .F., "activities\label_")
 
+	endfunc
+
+
+
+	function CreatePage(m.text, m.indent_level, m.name)	
+
+			&& Can't use params in .fwx templates apparantly, so create redundant local vars:
+			
+			m.sectionid = alltrim(str(lesson.lesson_id)) 
+			m.activityid = this.NewActivityID()
+			m.sectionnumber = alltrim(str(lesson.lesson_number))
+
+			this.Warn("TODO: CreatePage()")
+			return
+			return
+			return
+			return
+			return
+			return
+			return
+			return
+			
+			
+			if empty(m.indent_level)
+				m.indent = 0
+			else
+				m.indent = m.indent_level
+			endif
+				
+			m.label_text = alltrim(m.text)
+			if empty(m.name)
+				m.label_name = m.label_text
+			else
+				m.label_name = m.name
+			endif
+
+			m.label_name = strtran(strtran(m.label_name, '>', '}' ), '<', '{' )   && don't really want links in names, truncating can leave broken tags.
+			
+			&& this.Log("CreateLabel(" m.activityid + "." + m.label_text + ") (" + alltrim(str(len(m.label_text))) + ' chars' )
+
+			if (len(m.label_name) >= 75) 
+				m.label_name = left(m.label_name,75)
+				this.log('Truncating name of ' + m.activityid + ' text to 75 characters. (Actual content not affected) ' + alltrim(str(len(m.label_name))) + ' chars in: ' + m.label_name)
+			endif
+			
+&&&&&&&&& These conversions not needed - the real answer is to embed in a <![CDATA[ ..... ]]> tag.
+&&			m.label_text = strtran(m.label_text, '&', '&'+'amp;')	&& Moodle's (PHP's?) XML parser squawks on naked ampersands.  This strtran must come first.
+&& 			m.label_text = strtran(m.label_text, '<', '&'+'lt;')
+&& 			m.label_text = strtran(m.label_text, '>', '&'+'gt;')
+&& 			
+&& &&			m.label_text = strconv(m.label_text, 9)	&& Convert to UTF-8
+		
+
+		* If m.dest_fname is empty(), don't create the output file.  (STill returns output)
+		*   In this case, you need to spec the src_fname, such as MakeFile('', '', 'my_template.xml')
 
 			m.activity_folder =  "activities\label_" + m.activityid 
 			

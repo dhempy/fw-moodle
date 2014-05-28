@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module id="<%= m.activityid %>" version="2012112900">
-  <modulename>label</modulename>
+  <modulename>page</modulename>
   <sectionid><%= m.sectionid %></sectionid> 
   <sectionnumber><%=m.sectionnumber %></sectionnumber>
   <idnumber>$@NULL@$</idnumber>
