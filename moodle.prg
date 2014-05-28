@@ -688,84 +688,84 @@ define class MBZ	as custom
 	endfunc
 
 
-	function ExportLessonCategoryCombined()	
-
-			this.activity_list = this.activity_list + "TODO: 	ExportLessonCategoryCombined() for " + lesson.lesson + "<br />"+CRLF
-			this.Warn("TODO: 	ExportLessonCategoryCombined() for " + lesson.lesson)
-			return
-			return
-			return
-			return
-			return
-			return
-			return
-			return
-			return
-			
-
-
-			m.sectionid = alltrim(str(lesson.lesson_id)) 
-			m.activityid = this.NewActivityID()
-			m.sectionnumber = alltrim(str(lesson.lesson_number))
-			
-			m.activity_tag = "";
-	      + '  <activity>' +CRLF ;
-	      + '    <moduleid>' + m.activityid + '</moduleid>' +CRLF ;
-	      + '    <sectionid>' + m.sectionid + '</sectionid>' +CRLF ;
-	      + '    <modulename>label</modulename>' +CRLF ;
-	      + '    <title>' + alltrim(lesson.lesson) + ' Bulletins </title>' +CRLF ;
-	      + '    <directory>activities/label_' + m.activityid + '</directory>' +CRLF ;
-	      + '  </activity>' +CRLF
-
-			m.setting_tag = "";
-				 + '      <setting>' + CRLF ;
-		     + '        <level>activity</level>' + CRLF ;
-		     + '        <activity>label_' + m.activityid + '</activity>' + CRLF ;
-		     + '        <name>label_' + m.activityid + '_included</name>' + CRLF ;
-		     + '        <value>1</value>' + CRLF ;
-		     + '      </setting>' + CRLF ;
-		     + '      <setting>' + CRLF ;
-		     + '        <level>activity</level>' + CRLF ;
-		     + '        <activity>label_' + m.activityid + '</activity>' + CRLF ;
-		     + '        <name>label_' + m.activityid + '_userinfo</name>' + CRLF ;
-		     + '        <value>0</value>' + CRLF ;
-		     + '      </setting>' + CRLF 
-
-	      
-			if isnull(m.activity_tag) or isnull(m.setting_tag)
-				m.activity_tag = "<strong>Warning: null field in bulletins " + m.activityid + ".</strong><br />"+CRLF
-				this.Log(m.activity_tag)
-			endif
-			
-	    this.activity_list = this.activity_list + m.activity_tag
-	    this.setting_list = this.setting_list + m.setting_tag
-
-			
-
-
-			=Bulletin(.T., lesson.doc, .T.)
-
-this.Warn("ToDo: lesson fields dependent on =Bulletin?")			
-
-			m.label_text = m.bull_list + m.sidebar
-			m.label_text = strtran(m.label_text, '&', '&'+'amp;')	&& Moodle's (PHP's?) XML parser squawks on naked ampersands.  This strtran must come first.
-			m.label_text = strtran(m.label_text, '<', '&'+'lt;')
-			m.label_text = strtran(m.label_text, '>', '&'+'gt;')
-			
-&&			m.label_text = strconv(m.label_text, 9)	&& Convert to UTF-8
-
-			m.label_name = 'Combined Bulletins for ' + alltrim(lesson.lesson)
-
-			m.activity_folder =  "activities\label_" + m.activityid 
-
-			this.MakeFile("inforef.xml" , m.activity_folder, .F., "activities\label_")
-			this.MakeFile("label.xml"   , m.activity_folder, .F., "activities\label_")
-			this.MakeFile("filters.xml" , m.activity_folder, .F., "activities\label_")
-			this.MakeFile("grades.xml"  , m.activity_folder, .F., "activities\label_")
-			this.MakeFile("module.xml"  , m.activity_folder, .F., "activities\label_")
-			this.MakeFile("roles.xml"   , m.activity_folder, .F., "activities\label_")
-
-	endfunc
+											function ExportLessonCategoryCombined()	
+										
+													this.activity_list = this.activity_list + "TODO: 	ExportLessonCategoryCombined() for " + lesson.lesson + "<br />"+CRLF
+													this.Warn("TODO: 	ExportLessonCategoryCombined() for " + lesson.lesson)
+													return
+													return
+													return
+													return
+													return
+													return
+													return
+													return
+													return
+													
+										
+										
+&&													m.sectionid = alltrim(str(lesson.lesson_id)) 
+&&													m.moduleid = this.NewModuleID()
+&&													m.sectionnumber = alltrim(str(lesson.lesson_number))
+&&													
+&&													m.activity_tag = "";
+&&											      + '  <activity>' +CRLF ;
+&&											      + '    <moduleid>' + m.moduleid + '</moduleid>' +CRLF ;
+&&											      + '    <sectionid>' + m.sectionid + '</sectionid>' +CRLF ;
+&&											      + '    <modulename>label</modulename>' +CRLF ;
+&&											      + '    <title>' + alltrim(lesson.lesson) + ' Bulletins </title>' +CRLF ;
+&&											      + '    <directory>activities/label_' + m.moduleid + '</directory>' +CRLF ;
+&&											      + '  </activity>' +CRLF
+&&										
+&&													m.setting_tag = "";
+&&														 + '      <setting>' + CRLF ;
+&&												     + '        <level>activity</level>' + CRLF ;
+&&												     + '        <activity>label_' + m.moduleid + '</activity>' + CRLF ;
+&&												     + '        <name>label_' + m.moduleid + '_included</name>' + CRLF ;
+&&												     + '        <value>1</value>' + CRLF ;
+&&												     + '      </setting>' + CRLF ;
+&&												     + '      <setting>' + CRLF ;
+&&												     + '        <level>activity</level>' + CRLF ;
+&&												     + '        <activity>label_' + m.moduleid + '</activity>' + CRLF ;
+&&												     + '        <name>label_' + m.moduleid + '_userinfo</name>' + CRLF ;
+&&												     + '        <value>0</value>' + CRLF ;
+&&												     + '      </setting>' + CRLF 
+&&										
+&&											      
+&&													if isnull(m.activity_tag) or isnull(m.setting_tag)
+&&														m.activity_tag = "<strong>Warning: null field in bulletins " + m.moduleid + ".</strong><br />"+CRLF
+&&														this.Log(m.activity_tag)
+&&													endif
+&&													
+&&											    this.activity_list = this.activity_list + m.activity_tag
+&&											    this.setting_list = this.setting_list + m.setting_tag
+&&										
+&&													
+&&										
+&&										
+&&													=Bulletin(.T., lesson.doc, .T.)
+&&										
+&&										this.Warn("ToDo: lesson fields dependent on =Bulletin?")			
+&&										
+&&													m.label_text = m.bull_list + m.sidebar
+&&													m.label_text = strtran(m.label_text, '&', '&'+'amp;')	&& Moodle's (PHP's?) XML parser squawks on naked ampersands.  This strtran must come first.
+&&													m.label_text = strtran(m.label_text, '<', '&'+'lt;')
+&&													m.label_text = strtran(m.label_text, '>', '&'+'gt;')
+&&													
+&&										&&			m.label_text = strconv(m.label_text, 9)	&& Convert to UTF-8
+&&										
+&&													m.label_name = 'Combined Bulletins for ' + alltrim(lesson.lesson)
+&&										
+&&													m.activity_folder =  "activities\label_" + m.moduleid 
+&&										
+&&													this.MakeFile("inforef.xml" , m.activity_folder, .F., "activities\label_")
+&&													this.MakeFile("label.xml"   , m.activity_folder, .F., "activities\label_")
+&&													this.MakeFile("filters.xml" , m.activity_folder, .F., "activities\label_")
+&&													this.MakeFile("grades.xml"  , m.activity_folder, .F., "activities\label_")
+&&													this.MakeFile("module.xml"  , m.activity_folder, .F., "activities\label_")
+&&													this.MakeFile("roles.xml"   , m.activity_folder, .F., "activities\label_")
+&&										
+											endfunc
 
 
 
@@ -880,7 +880,7 @@ this.Warn("ToDo: lesson fields dependent on =Bulletin?")
 			this.CreateLabel(bull.text, 1)
 			this.Log("TODO: Parse for embedded links." )
 		else
-			this.CreatePage(bull.text, 1)
+			this.CreatePage(bull.text, 1, '', bull.detail)
 		endif
 		
 		return 1
@@ -895,6 +895,10 @@ this.Warn("ToDo: lesson fields dependent on =Bulletin?")
 	&& todo: add bulletinid and detail to params...generate link to detail page as needed.
 	&& todo: implement include.
 	
+		m.url = alltrim(m.url)
+		m.detail = alltrim(m.detail)
+		
+		
 			&& text	= 'Visit the [Wierd Physics Site] for some ideas.'
 			&& url	= 'http://phys.com'
 			&& m.detail = if empty(url) and not empty(detail), link to detail.
@@ -928,9 +932,12 @@ this.Warn("ToDo: lesson fields dependent on =Bulletin?")
 		this.Log("Todo: what to do about Private links?")
 	
 	*	m.msg = m.msg + 'MID: url is ' + m.url + '<br />' +CRLF
+
+		m.link = ''
 		
 		do case 
-			case not empty(m.url)
+
+			case len(m.url) > 1
 				&& Remember: single-equal is a head string match, not a full string match!
 				do case 
 					case (m.url = "http:") or (m.url = "https:") 
@@ -942,11 +949,7 @@ this.Warn("ToDo: lesson fields dependent on =Bulletin?")
 						m.link = "http://" + Request.ServerVariables("SERVER_NAME") + "/" + trim(thiscrs.webpath) + '/' + trim(m.url)
 						this.Warn("Link to local file: " + m.link)
 				endcase	
-			case not empty(m.detail)
-				m.link = "Oops!  This bulletin has a detail page.  We shouldn't be here." 
-				this.Warn("Oops!  This bulletin has a detail page.  We shouldn't be here." )
-			otherwise
-				m.link = ''
+
 		endcase
 	
 	*	m.msg = m.msg + 'POST: link is ' + m.link + '<br />'  +CRLF
@@ -967,7 +970,7 @@ this.Warn("ToDo: lesson fields dependent on =Bulletin?")
 			endif
 		endif
 
-		&& We're not exporting include references.		
+		&& n.b. We're not exporting include references to Moodle.  They were never used in DL. 
 	
 	&&	m.msg = m.msg + "FIN: html is " + m.changed_html + "<br />" + CRLF
 	
@@ -981,7 +984,7 @@ this.Warn("ToDo: lesson fields dependent on =Bulletin?")
 			&& Can't use params in .fwx templates apparantly, so create redundant local vars:
 			
 			m.sectionid = alltrim(str(lesson.lesson_id)) 
-			m.activityid = this.NewActivityID()
+			m.moduleid = this.NewModuleID()
 			m.sectionnumber = alltrim(str(lesson.lesson_number))
 
 			if empty(m.indent_level)
@@ -999,11 +1002,11 @@ this.Warn("ToDo: lesson fields dependent on =Bulletin?")
 
 			m.label_name = strtran(strtran(m.label_name, '>', '}' ), '<', '{' )   && don't really want links in names, truncating can leave broken tags.
 			
-			&& this.Log("CreateLabel(" m.activityid + "." + m.label_text + ") (" + alltrim(str(len(m.label_text))) + ' chars' )
+			&& this.Log("CreateLabel(" m.moduleid + "." + m.label_text + ") (" + alltrim(str(len(m.label_text))) + ' chars' )
 
 			if (len(m.label_name) >= 75) 
 				m.label_name = left(m.label_name,75)
-				this.log('Truncating name of ' + m.activityid + ' text to 75 characters. (Actual content not affected) ' + alltrim(str(len(m.label_name))) + ' chars in: ' + m.label_name)
+				this.log('Truncating name of ' + m.moduleid + ' text to 75 characters. (Actual content not affected) ' + alltrim(str(len(m.label_name))) + ' chars in: ' + m.label_name)
 			endif
 			
 &&&&&&&&& These conversions not needed - the real answer is to embed in a <![CDATA[ ..... ]]> tag.
@@ -1017,10 +1020,10 @@ this.Warn("ToDo: lesson fields dependent on =Bulletin?")
 		* If m.dest_fname is empty(), don't create the output file.  (STill returns output)
 		*   In this case, you need to spec the src_fname, such as MakeFile('', '', 'my_template.xml')
 
-			m.activity_folder =  "activities\label_" + m.activityid 
+			m.activity_folder =  "activities\label_" + m.moduleid 
 			
-			this.ActivityTag(m.activityid, m.sectionid, 'label', m.label_name, m.activity_folder)
-			this.SettingTag (m.activityid, 'label')
+			this.ActivityTag(m.moduleid, m.sectionid, 'label', m.label_name, m.activity_folder)
+			this.SettingTag (m.moduleid, 'label')
 			
 			this.MakeFile("inforef.xml" , m.activity_folder, .F., "activities\label_")
 			this.MakeFile("label.xml"   , m.activity_folder, .F., "activities\label_")
@@ -1033,23 +1036,15 @@ this.Warn("ToDo: lesson fields dependent on =Bulletin?")
 
 
 
-	function CreatePage(m.text, m.indent_level, m.name)	
+	function CreatePage(m.text, m.indent_level, m.name, m.content)	
 
 			&& Can't use params in .fwx templates apparantly, so create redundant local vars:
 			
 			m.sectionid = alltrim(str(lesson.lesson_id)) 
-			m.activityid = this.NewActivityID()
+			m.moduleid = this.NewModuleID()
 			m.sectionnumber = alltrim(str(lesson.lesson_number))
 
 			this.Warn("TODO: CreatePage()")
-			return
-			return
-			return
-			return
-			return
-			return
-			return
-			return
 			
 			
 			if empty(m.indent_level)
@@ -1058,60 +1053,58 @@ this.Warn("ToDo: lesson fields dependent on =Bulletin?")
 				m.indent = m.indent_level
 			endif
 				
-			m.label_text = alltrim(m.text)
+			m.page_text = alltrim(m.text)
 			if empty(m.name)
-				m.label_name = m.label_text
+				m.page_name = m.page_text
 			else
-				m.label_name = m.name
+				m.page_name = m.name
 			endif
-
-			m.label_name = strtran(strtran(m.label_name, '>', '}' ), '<', '{' )   && don't really want links in names, truncating can leave broken tags.
-			
-			&& this.Log("CreateLabel(" m.activityid + "." + m.label_text + ") (" + alltrim(str(len(m.label_text))) + ' chars' )
-
-			if (len(m.label_name) >= 75) 
-				m.label_name = left(m.label_name,75)
-				this.log('Truncating name of ' + m.activityid + ' text to 75 characters. (Actual content not affected) ' + alltrim(str(len(m.label_name))) + ' chars in: ' + m.label_name)
-			endif
-			
-&&&&&&&&& These conversions not needed - the real answer is to embed in a <![CDATA[ ..... ]]> tag.
-&&			m.label_text = strtran(m.label_text, '&', '&'+'amp;')	&& Moodle's (PHP's?) XML parser squawks on naked ampersands.  This strtran must come first.
-&& 			m.label_text = strtran(m.label_text, '<', '&'+'lt;')
-&& 			m.label_text = strtran(m.label_text, '>', '&'+'gt;')
-&& 			
-&& &&			m.label_text = strconv(m.label_text, 9)	&& Convert to UTF-8
 		
+			m.page_content = m.content
+
+			m.page_name = strtran(strtran(m.page_name, '>', '}' ), '<', '{' )   && don't really want links in names, truncating can leave broken tags.
+			m.page_name = strtran(m.page_name, '[', '' )   
+			m.page_name = strtran(m.page_name, ']', '' )   
+			
+			&& this.Log("CreatePage(" m.moduleid + "." + m.page_text + ") (" + alltrim(str(len(m.page_text))) + ' chars' )
+
+&& I don't think there's a limit for page name length...
+&&			if (len(m.page_name) >= 75) 
+&&				m.page_name = left(m.page_name,75)
+&&				this.log('Truncating name of ' + m.moduleid + ' text to 75 characters. (Actual content not affected) ' + alltrim(str(len(m.page_name))) + ' chars in: ' + m.page_name)
+&&			endif
+			
 
 		* If m.dest_fname is empty(), don't create the output file.  (STill returns output)
 		*   In this case, you need to spec the src_fname, such as MakeFile('', '', 'my_template.xml')
 
-			m.activity_folder =  "activities\label_" + m.activityid 
+			m.activity_folder =  "activities\page_" + m.moduleid 
 			
-			this.ActivityTag(m.activityid, m.sectionid, 'label', m.label_name, m.activity_folder)
-			this.SettingTag (m.activityid, 'label')
+			this.ActivityTag(m.moduleid, m.sectionid, 'page', m.page_name, m.activity_folder)
+			this.SettingTag (m.moduleid, 'page')
 			
-			this.MakeFile("inforef.xml" , m.activity_folder, .F., "activities\label_")
-			this.MakeFile("label.xml"   , m.activity_folder, .F., "activities\label_")
-			this.MakeFile("filters.xml" , m.activity_folder, .F., "activities\label_")
-			this.MakeFile("grades.xml"  , m.activity_folder, .F., "activities\label_")
-			this.MakeFile("module.xml"  , m.activity_folder, .F., "activities\label_")
-			this.MakeFile("roles.xml"   , m.activity_folder, .F., "activities\label_")
+			this.MakeFile("inforef.xml" , m.activity_folder, .F., "activities\page_")
+			this.MakeFile("page.xml"   , m.activity_folder, .F., "activities\page_")
+			this.MakeFile("grades.xml"  , m.activity_folder, .F., "activities\page_")
+			this.MakeFile("module.xml"  , m.activity_folder, .F., "activities\page_")
+			this.MakeFile("roles.xml"   , m.activity_folder, .F., "activities\page_")
 
 	endfunc
 
 
-	function ActivityTag(m.activityid, m.sectionid, 'label', m.label_name, m.activity_folder)
+
+	function ActivityTag(m.moduleid, m.sectionid, m.modulename, m.label_name, m.activity_folder)
 			m.activity_tag = "";
 	      + '  <activity>' +CRLF ; 
-	      + '    <moduleid>' + m.activityid + '</moduleid>' +CRLF ;
+	      + '    <moduleid>' + m.moduleid + '</moduleid>' +CRLF ;
 	      + '    <sectionid>' + m.sectionid + '</sectionid>' +CRLF ;
-	      + '    <modulename>label</modulename>' +CRLF +CRLF;
+	      + '    <modulename>' + m.modulename + '</modulename>' +CRLF +CRLF;
 	      + '    <title><![CDATA[' + m.label_name +  ']]></title>' +CRLF ;
 	      + '    <directory>' + strtran(m.activity_folder, '\', '/')  + '</directory>' +CRLF ;
 	      + '  </activity>' +CRLF
 
 			if isnull(m.activity_tag) 
-				m.activity_tag = "WARNING: null field in bulletins " + m.activityid + " activity tag. Nothing to export."+CRLF
+				m.activity_tag = "WARNING: null field in bulletins " + m.moduleid + " activity tag. Nothing to export."+CRLF
 				this.Warn(m.activity_tag)
 			endif
 
@@ -1120,24 +1113,24 @@ this.Warn("ToDo: lesson fields dependent on =Bulletin?")
 
 
 
-	function SettingTag(m.activityid, 'label')
+	function SettingTag(m.moduleid,  m.modulename)
 			m.setting_tag = "";
 				 + '      <setting>' + CRLF ;
 		     + '        <level>activity</level>' + CRLF ;
-		     + '        <activity>label_' + m.activityid + '</activity>' + CRLF ;
-		     + '        <name>label_' + m.activityid + '_included</name>' + CRLF ;
+		     + '        <activity>' + m.modulename + '_' + m.moduleid + '</activity>' + CRLF ;
+		     + '        <name>' + m.modulename + '_' + m.moduleid + '_included</name>' + CRLF ;
 		     + '        <value>1</value>' + CRLF ;
 		     + '      </setting>' + CRLF ;
 		     + '      <setting>' + CRLF ;
 		     + '        <level>activity</level>' + CRLF ;
-		     + '        <activity>label_' + m.activityid + '</activity>' + CRLF ;
-		     + '        <name>label_' + m.activityid + '_userinfo</name>' + CRLF ;
+		     + '        <activity>' + m.modulename + '_' + m.moduleid + '</activity>' + CRLF ;
+		     + '        <name>' + m.modulename + '_' + m.moduleid + '_userinfo</name>' + CRLF ;
 		     + '        <value>0</value>' + CRLF ;
 		     + '      </setting>' + CRLF 
 
 
 			if isnull(m.setting_tag)
-				m.activity_tag = "WARNING: null field in bulletins " + m.activityid + ". Nothing to export."+CRLF
+				m.activity_tag = "WARNING: null field in bulletins " + m.moduleid + ". Nothing to export."+CRLF
 				this.Warn(m.activity_tag)
 			endif
 			
@@ -1222,7 +1215,7 @@ this.Warn("ToDo: lesson fields dependent on =Bulletin?")
 		return m.msg
 	endproc		
 
-	function NewActivityID
+	function NewModuleID
 		this.current_activity_id = this.current_activity_id + 1
 		return alltrim(str(this.current_activity_id ))
 	endfunc

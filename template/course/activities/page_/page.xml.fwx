@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <activity id="105" moduleid="<%= m.moduleid %>" modulename="page" contextid="723">
   <page id="105">
-    <name><![CDATA[<%= m.name %>]]></name> 	
-    <intro><![CDATA[<%= m.intro %>]]></intro>
+    <name><![CDATA[<%= m.page_name %>]]></name> 	
+    <intro><![CDATA[<%= m.page_text %>]]></intro>
     <introformat>1</introformat>
-    <content><![CDATA[<%= m.content %>]]></content>
+    <content><![CDATA[<%= m.page_content %>]]></content>
     <contentformat>1</contentformat>
     <legacyfiles>0</legacyfiles>
     <legacyfileslast>$@NULL@$</legacyfileslast>
     <display>5</display>
-    <displayoptions>a:2:{s:12:"printheading";s:1:"1";s:10:"printintro";s:1:"1";}</displayoptions>
-    <revision>3</revision>
+    <displayoptions>a:2:{s:12:"printheading";s:1:"1";s:10:"printintro";s:1:"0";}</displayoptions>
+    <revision>1</revision>
     <timemodified><%= EpochDate() %></timemodified>
   </page>
 </activity>
