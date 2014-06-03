@@ -9,9 +9,6 @@
 
 ** init - dhempy 6/5/2013 12:27:34 AM
 
-** set procedure to \db\common\common additive
-**set procedure to \db\common\bulletin additive
-
 
 
 
@@ -388,7 +385,7 @@ define class MBZ	as custom
 		&& Set up this.backup_folder: 			=========================
 		
 		if empty(m.subfolder)
-			this.Log("Error: no subfolder given to this.SetFolders()")
+			this.Warn("Error: no subfolder given to this.SetFolders()")
 			return
 		endif
 		
@@ -485,6 +482,10 @@ define class MBZ	as custom
 		Response.Clear
 
 
+		&& Catch any absolute links and make full URL's:  (would like to catch relative links too, but that's an odd thing to have in a bulletin, and hard to do without regex's)
+		m.output = strtran(m.output, [href="/], [href="http://] + Request.ServerVariables("SERVER_NAME") + [/])
+		m.output = strtran(m.output, [href='/], [href='http://] + Request.ServerVariables("SERVER_NAME") + [/])
+
 		m.bytes = alltrim(str(len(m.output)))
 
 		if (empty(m.dest_fname)) 		
@@ -495,7 +496,7 @@ define class MBZ	as custom
 			STRTOFILE( strconv(m.output, 9)  , m.dest) 
 
 			if (!file(m.dest))
-				this.Log("<strong class='error'>ERROR: Could not create &dest from &src</strong>")
+				this.Warn("<strong class='error'>ERROR: Could not create &dest from &src</strong>")
 			else
 				&& this.Log("Created <tt>&dest</tt> --  &bytes bytes" )
 			endif
@@ -873,12 +874,10 @@ define class MBZ	as custom
 	function ExportBulletin()
 		this.Log("ExportBulletin(): " + trim(str(Bull.bulletinid) )+ ". " + trim(Bull.text) )
 
-		this.Log("TODO(): call GenHTML to populate links")
-		m.text = this.GenHTML(Bull.text, bull.url, bull.detail)
 		
 		if isnull(Bull.detail) or empty(Bull.detail)
-			this.CreateLabel(bull.text, 1)
-			this.Log("TODO: Parse for embedded links." )
+			m.text = this.GenHTML(Bull.text, bull.url)
+			this.CreateLabel(m.text, 1)
 		else
 			this.CreatePage(bull.text, 1, '', bull.detail)
 		endif
@@ -891,27 +890,15 @@ define class MBZ	as custom
 	&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 	&& Generates html from text and url  (Lifted from ../common/bulletin.prg 5/23/2014 15:51:59 )
 	&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-	function GenHTML(m.text, m.url, m.detail)
-	&& todo: add bulletinid and detail to params...generate link to detail page as needed.
-	&& todo: implement include.
-	
-		m.url = alltrim(m.url)
-		m.detail = alltrim(m.detail)
-		
-		
+	function GenHTML(m.text, m.url)
 			&& text	= 'Visit the [Wierd Physics Site] for some ideas.'
 			&& url	= 'http://phys.com'
-			&& m.detail = if empty(url) and not empty(detail), link to detail.
-			&&		note...you don't have to pass in the whole detail...simply length(detail) or (not empty(detail)) will do.
-	
+			
 			&& returns: html = 'Visit the <a href="http://phys.com">Wierd Physics Site</a> for some ideas.'
+						
+		m.url = alltrim(m.url)
+		
 	
-	&& Comenting out the quote replacer 10/22/2003 11:53PM -dave.  Not sure why I ever thought this was a good idea.
-	&&	m.text = strtran(m.text, '"', '&quot;')	
-	
-		&& m.msg = m.msg + 'detail is ' + iif(empty(m.detail), 'EMPTY', 'NOT EMPTY') + '<br />'
-	
-	*	m.msg = m.msg + 'PRE: url is ' + m.url + '<br />' +CRLF
 	
 			&& Link prefix to retrieve private documents:
 			&& This URL also appears in /common/common.prg ... check there if you need to change this.
@@ -920,8 +907,11 @@ define class MBZ	as custom
 	*	m.url = strtran(m.url, '<<private>>', ;
 	*		URL('Get',lower(login.level)) + '?courseid='+m.courseid+'&'+'name=' , ;
 	*		-1, -1, 2 )	&& -1, -1, 2 indicates case insensitive
-	
-		&& Do this for now...until we get VFP upgraded above 6.0:
+
+		if (0 < at('<<', m.text) )
+			this.Warn('FoxWeb tag in HTML:  ' + m.text)
+		endif
+		
 		m.url = strtran(m.url, '<<private>>', ;
 			URL('Get',lower(login.level)) + '?courseid='+m.courseid+'&'+'name=' )
 		m.url = strtran(m.url, '<<Private>>', ;
@@ -929,50 +919,45 @@ define class MBZ	as custom
 		m.url = strtran(m.url, '<<PRIVATE>>', ;
 			URL('Get',lower(login.level)) + '?courseid='+m.courseid+'&'+'name=' )
 	
-		this.Log("Todo: what to do about Private links?")
-	
-	*	m.msg = m.msg + 'MID: url is ' + m.url + '<br />' +CRLF
 
 		m.link = ''
-		
+
 		do case 
+			case (m.url = "http:") or (m.url = "https:") 
+				&&this.Warn("Full URL found: [&url]")
+				m.link = trim(m.url)
+			case (m.url = '/') 
+				&&this.Warn("Absolute link found: [&url] Prepending http://" + Request.ServerVariables("SERVER_NAME") +"")
+				m.link = "http://" + Request.ServerVariables("SERVER_NAME") + trim(m.url)
+				&&this.Warn("Link to local file: " + m.link)
+			case not empty(m.url)
+				&&this.Warn("Relative URL found: [&url] Prepending http://" + Request.ServerVariables("SERVER_NAME") + "/" + trim(thiscrs.webpath) + '/' +"")
+				m.link = "http://" + Request.ServerVariables("SERVER_NAME") + "/" + trim(thiscrs.webpath) + '/' + trim(m.url)
+				&&this.Warn("Link to local file: " + m.link)
+		endcase	
 
-			case len(m.url) > 1
-				&& Remember: single-equal is a head string match, not a full string match!
-				do case 
-					case (m.url = "http:") or (m.url = "https:") 
-						m.link = trim(m.url)
-					case (m.url = '/') 
-						m.link = "http://" + Request.ServerVariables("SERVER_NAME") + trim(m.url)
-						this.Warn("Link to local file: " + m.link)
-					otherwise 
-						m.link = "http://" + Request.ServerVariables("SERVER_NAME") + "/" + trim(thiscrs.webpath) + '/' + trim(m.url)
-						this.Warn("Link to local file: " + m.link)
-				endcase	
-
-		endcase
-	
-	*	m.msg = m.msg + 'POST: link is ' + m.link + '<br />'  +CRLF
-		
 	
 		
 		if (empty(m.link))	
-			m.changed_html = m.text
+			&& this.Log("No URL to link text to.  OK.")
+			return m.text
+		endif
+
+				
+		if (0 < at('[', m.text) )
+			&& m.msg = m.msg + 'convert [...] to a link.<br />'+CRLF
+			m.changed_html = strtran(m.text, '[', '<a href="' + m.link + '">', 1,1)
+			m.changed_html = strtran(m.changed_html, ']', '</a>', 1,1)
 		else
-			if (0 < at('[', m.text) )
-				&& m.msg = m.msg + 'convert [...] to a link.<br />'+CRLF
-				m.changed_html = strtran(m.text, '[', '<a href="' + m.link + '">', 1,1)
-				m.changed_html = strtran(m.changed_html, ']', '</a>', 1,1)
-			else
-				&& m.msg= m.msg + 'wrap entire string in a link.<br />'+CRLF
-				m.changed_html = '<a href="' + m.link + '">' ;
-					+ m.text + '</a>'
-			endif
+			&& m.msg= m.msg + 'wrap entire string in a link.<br />'+CRLF
+			m.changed_html = '<a href="' + m.link + '">' ;
+				+ m.text + '</a>'
 		endif
 
 		&& n.b. We're not exporting include references to Moodle.  They were never used in DL. 
+
+		&& 	this.Log('Linking text in bulletin: ' + m.changed_html)
 	
-	&&	m.msg = m.msg + "FIN: html is " + m.changed_html + "<br />" + CRLF
 	
 		return m.changed_html
 	endproc
@@ -999,26 +984,15 @@ define class MBZ	as custom
 			else
 				m.label_name = m.name
 			endif
-
-			m.label_name = strtran(strtran(m.label_name, '>', '}' ), '<', '{' )   && don't really want links in names, truncating can leave broken tags.
 			
+
 			&& this.Log("CreateLabel(" m.moduleid + "." + m.label_text + ") (" + alltrim(str(len(m.label_text))) + ' chars' )
 
+			m.label_name = this.KillTags(m.label_name)  && don't really want links in names, truncating can leave broken tags.  Note - this is not the label contents.  Not sure it even appears anywhere.
 			if (len(m.label_name) >= 75) 
 				m.label_name = left(m.label_name,75)
-				this.log('Truncating name of ' + m.moduleid + ' text to 75 characters. (Actual content not affected) ' + alltrim(str(len(m.label_name))) + ' chars in: ' + m.label_name)
+				&& this.log('Truncating name of ' + m.moduleid + ' text to 75 characters. (Actual content not affected) ' + alltrim(str(len(m.label_name))) + ' chars in: ' + m.label_name)
 			endif
-			
-&&&&&&&&& These conversions not needed - the real answer is to embed in a <![CDATA[ ..... ]]> tag.
-&&			m.label_text = strtran(m.label_text, '&', '&'+'amp;')	&& Moodle's (PHP's?) XML parser squawks on naked ampersands.  This strtran must come first.
-&& 			m.label_text = strtran(m.label_text, '<', '&'+'lt;')
-&& 			m.label_text = strtran(m.label_text, '>', '&'+'gt;')
-&& 			
-&& &&			m.label_text = strconv(m.label_text, 9)	&& Convert to UTF-8
-		
-
-		* If m.dest_fname is empty(), don't create the output file.  (STill returns output)
-		*   In this case, you need to spec the src_fname, such as MakeFile('', '', 'my_template.xml')
 
 			m.activity_folder =  "activities\label_" + m.moduleid 
 			
@@ -1035,6 +1009,22 @@ define class MBZ	as custom
 	endfunc
 
 
+	function KillTags(m.text)	&& Removes all HTML tags, leaving naked text. 
+		do while .T.
+			m.a = at('<', m.text)
+			m.b = at('>', m.text)
+			if ( m.a < 1 or m.a > m.b )
+				&& no full tag found
+				exit 
+			endif
+			m.text = left (m.text,m.a-1) + substr(m.text,m.b+1)
+		enddo
+
+		return m.text
+	endfunc
+
+
+
 
 	function CreatePage(m.text, m.indent_level, m.name, m.content)	
 
@@ -1044,7 +1034,7 @@ define class MBZ	as custom
 			m.moduleid = this.NewModuleID()
 			m.sectionnumber = alltrim(str(lesson.lesson_number))
 
-			this.Warn("TODO: CreatePage()")
+			&& this.Log("CreatePage()")
 			
 			
 			if empty(m.indent_level)
@@ -1054,6 +1044,8 @@ define class MBZ	as custom
 			endif
 				
 			m.page_text = alltrim(m.text)
+			
+			&& In moodle, the link won't be embedded.  It must be the entire activity text:
 			m.page_text = strtran(m.page_text, '[', '' )   
 			m.page_text = strtran(m.page_text, ']', '' )   
 
@@ -1065,7 +1057,7 @@ define class MBZ	as custom
 
 			if (len(m.page_name) >= 250) 
 				m.page_name = left(m.page_name,250) + "..."
-				this.log('Truncating name of ' + m.moduleid + ' text to 75 characters. (Actual content not affected) ' + alltrim(str(len(m.page_name))) + ' chars in: ' + m.page_name)
+				&&  this.log('Truncating name of ' + m.moduleid + ' text to 75 characters. (Actual content not affected) ' + alltrim(str(len(m.page_name))) + ' chars in: ' + m.page_name)
 			endif
 			
 			m.page_content = m.content
