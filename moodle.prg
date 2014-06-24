@@ -37,10 +37,15 @@ define class MBZ	as custom
 	questionid =  ''	&& only used for MATCH questions, where question cursor is gone by the time questionid is needed in template.
 	quiz_list = ''
 	section_list = ''
+	vis_stu = .F.
+	vis_fac = .F.
 		
 	procedure Init()
 		this.courseid = thiscrs.courseid
 		this.export_title = "FoxWeb Export | " + strtran(ttoc(datetime(),3), 'T', ' ')
+		
+		this.vis_stu = not empty(Request.QueryString('viz_stu'))
+		this.vis_fac = not empty(Request.QueryString('viz_fac'))
 		
 	  this.PrepDatabase()
 	endproc
@@ -68,7 +73,6 @@ define class MBZ	as custom
 		Response.Buffer = .T.		&& Don't send immediately.
 		m.existing_content = Response.OutputBuffer 
 		Response.Clear
-
 
 
 		this.ScanLessons()	&& generates all section files and populates vars used in top-level files.
@@ -584,8 +588,18 @@ define class MBZ	as custom
 		m.lesson_first = alltrim(str(val(Request.QueryString('lesson_first')) ))
 		m.lesson_last  = alltrim(str(val(Request.QueryString('lesson_last'))  ))
 		m.lesson_start = alltrim(str(val(Request.QueryString('lesson_start')) ))
+		
 
-		this.filename_part = ThisCrs.courseid + '-'
+		this.filename_part = ThisCrs.courseid + '.'
+	
+		if (this.vis_fac)
+				this.filename_part = this.filename_part + 'fac.'
+		endif
+
+		if (this.vis_stu )
+				this.filename_part = this.filename_part + 'stu.'
+		endif
+
 
 		do case 
 			case not empty (Request.QueryString('lessonid')) 
@@ -778,25 +792,25 @@ define class MBZ	as custom
 	
 			this.Log("<h3>ExportLessonCategories for " + alltrim(lesson.id) + ": " + alltrim(lesson.lesson) + "</h3>")
 		
-			m.where_clause = ' and forsch = .T. '		&& Maybe add forstu, forfac fields?  What about forpub?
+			m.where_clause = ' '		&& Maybe add forstu, forfac fields?  What about forpub?
 			m.order_by = ''
-			
 
+&&			if (not  this.vis_fac)
+&&					&& this doesn't seem to work...oh, well, the bulletin filters seem to take care of it.
+&&					m.where_clause = m.where_clause + ' and not (bul_cat.category = "Facilitator") '
+&&			endif
+
+				
 		 	select bul_cat.* from dl!bul_cat ;
 				where bul_cat.id in ;
 					(select bul_catid from dl!bul_catcrs where courseid = this.courseid) ;
+					and not(	bul_cat.exp_type == 'skip') ;
 		 		order by sort_order, category ;
 		 		into cursor cat
 					
 			&& this.Log("Found " + alltrim(str(_tally)) + " categories")
 			
 			scan
-
-				if (cat.exp_type == 'skip')
-					loop
-				endif
-				
-
 
 				if (cat.exp_type == 'combine')
 					this.Log(" <b> === Export type: " + cat.exp_type + " === </b>")
@@ -824,14 +838,23 @@ define class MBZ	as custom
 		m.where_clause = ''		&& Maybe add forstu, forfac fields?  What about forpub?
 		m.order_by = '	order by bcrs.sort_order, bcrs.bullfirst, b.id '
 		
-&& 
-&&  	select bul_cat.* from dl!bul_cat ;
-&& 		where bul_cat.id in ;
-&& 			(select bul_catid from dl!bul_catcrs where courseid = this.courseid) ;
-&&  		order by sort_order, category ;
-&&  		into cursor cat
-&& 	
+		
+		do case
+			case this.vis_stu and this.vis_fac
+				m.where_clause = m.where_clause + ' and (  b.forstu = .T. or  b.forfac = .T. )'
 
+			case this.vis_stu 
+				m.where_clause = m.where_clause + ' and b.forstu = .T. '
+
+			case this.vis_fac
+				m.where_clause = m.where_clause + ' and b.forfac = .T. '
+
+			otherwise && This is kinda silly...but at least not confusing.
+				m.where_clause = m.where_clause + ' and b.forstu = .F. and b.forfac = .F. '
+				
+		endcase
+
+		
 		select b.id as bulletinid, b.text, b.url, b.detail, b.b_css, b.exp_dont, ;
 				bcrs.html, bcrs.bullfirst, bcrs.bulllast ;
 			from dl!bulletin b ;

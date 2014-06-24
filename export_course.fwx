@@ -42,36 +42,25 @@
 		
 			<dl>
 
-
 				<dt>
-					Export a single lesson:  
-				</dt>
-				<dd>
-					<input name="lessonid" value="<%= Request.QueryString('lessonid') %>" size="4" maxlength="3" /> 
-					<br />
-					<em>e.g. 34</em>  Alternately, find it in Bulletins and export from there. (To Do!)
-				</dd>
-
-				<dt>
-					<em>OR</em> Export a Range of Lessons:  
+					Export a Range of Lessons:  
 				</dt>
 				<dd>
 					<input name="lesson_first" value="<%= Request.QueryString('lesson_first') %>" size="4" maxlength="3" /> - 
 					<input name="lesson_last" value="<%= Request.QueryString('lesson_last') %>" size="4" maxlength="3" /> 
 					<br />
-					<em>e.g. 21 - 30 </em>
+					<em>e.g. 30-39 or 1-200</em>
 				</dd>
 
-				<dt>
-					<em>OR</em> Export a Number of Lessons:  
+
+					<dt>
+					Include in Export:
 				</dt>
 				<dd>
-					Export <input name="limit" value="<%= Request.QueryString('limit') %>" size="4" maxlength="3" />  lessons, 
-					starting with lesson <input name="lesson_start" value="<%= Request.QueryString('lesson_start') %>" size="4" maxlength="3" /> 
-					<br />
-					<em>Leave blank for all</em>
+					<input name="viz_stu" type="checkbox" <%= iif(not empty(Request.QueryString('viz_stu')), 'CHECKED', ;
+						iif(empty(Request.QueryString('do')), 'CHECKED', '') ) %> /> Student Bulletins <br />
+					<input name="viz_fac" type="checkbox" <%= iif(not empty(Request.QueryString('viz_fac')), 'CHECKED', '' ) %> /> Facilitor Bulletins<br />
 				</dd>
-
 
 			
 				<dt>
