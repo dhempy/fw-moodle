@@ -44,7 +44,7 @@ define class MBZ	as custom
 		this.courseid = thiscrs.courseid
 		this.export_title = "FoxWeb Export | " + strtran(ttoc(datetime(),3), 'T', ' ')
 		
-		this.vis_stu = not empty(Request.QueryString('viz_stu'))
+		this.vis_stu = not empty(Request.QueryString('viz_stu')) 
 		this.vis_fac = not empty(Request.QueryString('viz_fac'))
 		
 	  this.PrepDatabase()
