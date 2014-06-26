@@ -35,7 +35,7 @@
 		<div class="box">
 			<h2>Validate Questions</h2>
 			<p><i>Consider running these tests before exporing your questions!</i></p>
-			<p>Find <a href="validate_questions.fwx">Questions with _____ multiple _______ blanks</a>.</p>
+			<p>Find <a href="validate_questions.fwx">Questions with _____ multiple _______ blanks</a>.</p> 
 			
 		</div>
 
