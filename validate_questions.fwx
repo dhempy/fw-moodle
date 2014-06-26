@@ -1,0 +1,53 @@
+<%	StaffOnly() %>
+<html>
+	<head>
+		<title>Validate Questions</title>
+		<%= DocHead %>
+		<link rel="stylesheet" type="text/css" href="/style/intranet.css" />
+		<style type="text/css" media="screen">@import url(/style/default.css);</style>
+		<link rel="stylesheet" type="text/css" media="print" href="/style/default_print.css" />
+	</head>
+	<body>	
+		<h1>
+		Validate Questions
+		</h1>
+	
+		<p> Questions with issues, such as ______ multiple ______ blanks.  These questions do not play well in Moodle, as the first blank gets converted to a textbox, but the second languishes.  Consider editing these questions to a different format.</p>
+		
+		
+	<ul>
+
+<%
+  set procedure to \db\moodle\moodle additive
+  
+  m.start_time = datetime()
+  
+  
+  SELECT qs.qs_text, qs.qs_order, qs.questionid, qsect.sectionid, qz.quizid ;
+  	FROM qquizes qz ;
+  		join qsections qsect on qsect.sectionid = qz.quizid ;
+			join qquestions qs on qs.questionid = qsect.sectionid  ;
+  	WHERE qs_text like "%\_% %\_" escape "\" ;
+  	order by qs.questionid ;	
+  	into cursor q	
+  	
+  scan
+%>
+		<li> <a href='<%=URL('Quiz')%>?sectionid=<%= q.sectionid %>&courseid=<%= left(q.quizid,4) %>&quizid=<%= q.quizid %>&do=Edit+Questions#q<%= alltrim(str(int(q.qs_order))) %>'><%= q.questionid %></a> <%= q.qs_text %> </li>
+		
+		
+<%
+  endscan
+%>  
+	
+</ul>
+
+</body>
+</html>
+
+<%
+	&& This is important, or you can't recompile this file without restarting FoxWeb.
+	release mbz
+	clear class MBZ
+%>
+

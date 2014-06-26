@@ -32,6 +32,13 @@
 	endif
 %>
 
+		<div class="box">
+			<h2>Validate Questions</h2>
+			<p><i>Consider running these tests before exporing your questions!</i></p>
+			<p>Find <a href="validate_questions.fwx">Questions with _____ multiple _______ blanks</a>.</p>
+			
+		</div>
+
 
 		<form method="get" class="box">
 			<h2>Question Export Parameters</h2>
@@ -83,10 +90,11 @@
 		</form>
 	
 
+	
 		<div class="box">
 			<h2>Download Export Files</h2>
 			<p>Exported questions are available at <a href="ftp://util1.ket.org/">ftp://util1.ket.org/</a> . See your sysadmin for access.
-			
+			</p>
 		</div>
 	
 

@@ -320,7 +320,7 @@ define class MBZ	as custom
 								if (q_key.k_worth > qques.qs_worth)
 									this.Warn("Excess score reduced to 100%: " + alltrim(str(q_key.k_worth)) + "/" + alltrim(str(qques.qs_worth)) ;
 									+ "points for Key <a href='" + URL('Quiz') + "?courseid=" + this.courseid ;
-									+ "&" + "quizid=GR1Z001" ;
+									+ "&" + "quizid=" + qz.quizid ;
 									+ "&" + "do=grade" ;
 									+ "&" + "showme=all" ;
 									+ "&" + "questionID=" + qques.questionid  ;
@@ -873,8 +873,15 @@ define class MBZ	as custom
 			return 0
 		endif
 
-		this.Log("<h4>Category: " + trim(str(cat.id) )+ ". " + trim(cat.category )+ " (" + alltrim(str(_tally)) + " bulletins)</h4>" )
-		this.CreateLabel("<h3>"+alltrim(cat.category)+ "</h3>", 0) 
+		this.Log("<h4>Category: " + trim(str(cat.id) )+ ". " + trim(cat.category )+ " (" + alltrim(str(_tally)) + " bulletins) (sort_order=" + alltrim(str(cat.sort_order)) + ")</h4>" )
+		
+		
+		m.classtag = [class="dl_topic_category ] + trim(cat.css_class) + ["]
+		if (not empty (trim(cat.css_id)))
+			m.classtag = m.classtag + [ id="] + trim(cat.css_id) + ["]
+		endif
+		
+		this.CreateLabel('<div ' + m.classtag + '><h3>'+alltrim(cat.category)+ '</h3></div>', 0) 
 
 		m.bull_count = 0
 		
