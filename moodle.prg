@@ -39,6 +39,11 @@ define class MBZ	as custom
 	section_list = ''
 	vis_stu = .F.
 	vis_fac = .F.
+
+	&& Is the current category all combined into one?  (This will be overwritten frequenetly while looping)
+	combine = .F.
+	combined_output = ""	
+
 		
 	procedure Init()
 		this.courseid = thiscrs.courseid
@@ -99,7 +104,6 @@ define class MBZ	as custom
 		this.ZipFiles()		
 		
 
-		this.Log("Saved export files to: <tt>" + this.backup_folder + "</tt>") 
 
 		this.Warn('<p>Recap of warnings during this export: </p><ul>' + this.warnings + '</ul>')
 
@@ -429,22 +433,24 @@ define class MBZ	as custom
   function ZipFiles()
   	&& Compresses all generated files into a single zip (or .mbz) file
  
- 		this.Log("Zipping all files in <tt>" + this.backup_folder + "</tt> into zip file <tt>" + this.filename_part + "</tt>."  )
+ 		&& this.Log("Zipping all files in <tt>" + this.backup_folder + "</tt> into zip file <tt>" + this.filename_part + "</tt>."  )
  		
-  	Server.AddScriptTimeout(10, .T.)
+  	Server.AddScriptTimeout(30, .T.)
  		
- 		m.zip_cmd = "C:\Progra~1\7-Zip\7z.exe a -r " + this.backup_folder + "..\" + this.filename_part + ".zip " + this.backup_folder + "*.*"
+		m.shell_cmd = "C:\Progra~1\7-Zip\7z.exe a -r " + this.backup_folder + "..\" + this.filename_part + ".zip " + this.backup_folder + "*.*"
+	 		&& TODO - consider using %ProgramFiles% env var instead of hard-coded path.   
+ 		&& this.Log("run &shell_cmd ")
+ 		run &shell_cmd
 
- 		&& TODO - consider using %ProgramFiles% env var instead of hard-coded path.   
-
- 		this.Log("run &zip_cmd ")
- 		run &zip_cmd
+  	Server.AddScriptTimeout(30, .T.)
  		
- 		&& trivial change 
- 		
-&&		this.Log("rmdir /s /q &backup_folder   (command skipped) ")
-&& 		run rmdir /s /q &backup_folder   && This causes bizarre errors.
-&&		this.MakePath(this.backup_folder)
+ 		m.shell_cmd = "rmdir /s /q " + this.backup_folder 
+		&& this.Log("run &shell_cmd")
+ 		run &shell_cmd
+ 				&& Why doesn't this rmdir work?
+		
+		this.Log("<div class='box'><h1>Course backup saved to:</h1> <tt>" + left(this.backup_folder, len(this.backup_folder)-1) + ".zip </tt></div>") 
+		
 		
   endfunc
 
@@ -704,9 +710,15 @@ define class MBZ	as custom
 
 
 											function ExportLessonCategoryCombined()	
+													&& Exports an entire bulletin category within one lesson as a single Moodle label.
+													&& Paremeters: global cursor cat.id, lesson.doc
 										
 													this.activity_list = this.activity_list + "TODO: 	ExportLessonCategoryCombined() for " + lesson.lesson + "<br />"+CRLF
 													this.Warn("TODO: 	ExportLessonCategoryCombined() for " + lesson.lesson)
+
+													= DynamicCategories ('STU', cat.id)		&& Sets m.bull_list and m.sidebar
+													this.CreateLabel('<div ' + m.classtag + '><h3>'+alltrim(cat.category)+ '</h3>' + m.bull_list + m.sidebar +  ' </div>', 0) 
+
 													return
 													return
 													return
@@ -717,7 +729,7 @@ define class MBZ	as custom
 													return
 													return
 													
-										
+
 										
 &&													m.sectionid = alltrim(str(lesson.lesson_id)) 
 &&													m.moduleid = this.NewModuleID()
@@ -812,13 +824,13 @@ define class MBZ	as custom
 			
 			scan
 
-				if (cat.exp_type == 'combine')
-					this.Log(" <b> === Export type: " + cat.exp_type + " === </b>")
-					this.ExportLessonCategoryCombined()			&& Handles category title, etc.
-				else 
+&&				if (cat.exp_type == 'combine')
+&&					this.Log(" <b> === Export type: " + cat.exp_type + " === </b>")
+&&					this.ExportLessonCategoryCombined()			&& Handles category title, etc.
+&&				else 
 					&& default behavior is 'single'
 					this.ExportLessonCategoryBulletins()
-				endif
+&&				endif
 
 			endscan
 			
@@ -838,6 +850,9 @@ define class MBZ	as custom
 		m.where_clause = ''		&& Maybe add forstu, forfac fields?  What about forpub?
 		m.order_by = '	order by bcrs.sort_order, bcrs.bullfirst, b.id '
 		
+		&& Is this category all combined into one?
+		this.combine = (cat.exp_type == 'combine')
+		this.combined_output = ""	
 		
 		do case
 			case this.vis_stu and this.vis_fac
@@ -875,13 +890,22 @@ define class MBZ	as custom
 
 		this.Log("<h4>Category: " + trim(str(cat.id) )+ ". " + trim(cat.category )+ " (" + alltrim(str(_tally)) + " bulletins) (sort_order=" + alltrim(str(cat.sort_order)) + ")</h4>" )
 		
+		m.class_list = "dl_topic_category "
 		
 		m.classtag = [class="dl_topic_category ] + trim(cat.css_class) + ["]
 		if (not empty (trim(cat.css_id)))
-			m.classtag = m.classtag + [ id="] + trim(cat.css_id) + ["]
+			m.class_list = m.class_list + trim(cat.css_id) + " "
 		endif
-		
-		this.CreateLabel('<div ' + m.classtag + '><h3>'+alltrim(cat.category)+ '</h3></div>', 0) 
+		m.cat_header = '<h3 class="' + m.class_list + '">'+alltrim(cat.category)+ '</h3>'
+
+
+		if (this.combine)
+			this.combined_output = '<div class="' + m.class_list + '">' ;
+				+ m.cat_header +CRLF ;	
+				+ '<ul class="combined_bulletins">' + CRLF 
+		else
+			this.CreateLabel('<div class="' + m.class_list + '">' + m.cat_header+ '</div>', 0) 
+		endif
 
 		m.bull_count = 0
 		
@@ -896,6 +920,12 @@ define class MBZ	as custom
 
 		endscan
 
+
+		if (this.combine)
+			this.combined_output = this.combined_output + '</ul></div>'+CRLF
+			this.CreateLabel(this.combined_output, 0) 
+		endif
+
 					
 		return m.bull_count 
 	endfunc
@@ -907,9 +937,27 @@ define class MBZ	as custom
 		
 		if isnull(Bull.detail) or empty(Bull.detail)
 			m.text = this.GenHTML(Bull.text, bull.url)
-			this.CreateLabel(m.text, 1)
+			if (this.combine)
+				this.combined_output = this.combined_output  + "<li>"+m.text+"</li>" +CRLF
+			else
+				this.CreateLabel(m.text, 1)
+			endif
+
 		else
-			this.CreatePage(bull.text, 1, '', bull.detail)
+
+			if (this.combine)
+				this.combined_output = this.combined_output  + "<li>"+this.GenHTML(Bull.text, bull.url)+"</li>" +CRLF
+				this.Warn("Bulletin detail page cannot be exported in a combined category! Consider moving to another category. " ;
+					+ "<a href='" + URL('BulletinMenu') + "?courseid=" + this.courseid ;
+					+ "&" + "bulletinid=" + alltrim(str(Bull.bulletinid)) ;
+					+ "&" + "edit=bulletin" ;
+					+ "'>EDIT BULLETIN " ;
+					+ alltrim(str(Bull.bulletinid)) + "</a>" ) 
+					
+			else
+				this.CreatePage(bull.text, 1, '', bull.detail)
+			endif
+
 		endif
 		
 		return 1
@@ -1026,6 +1074,8 @@ define class MBZ	as custom
 
 			m.activity_folder =  "activities\label_" + m.moduleid 
 			
+			&& this.Log("CreateLabel(" + m.moduleid + "." + m.label_text + ") in " + m.activity_folder  )
+
 			this.ActivityTag(m.moduleid, m.sectionid, 'label', m.label_name, m.activity_folder)
 			this.SettingTag (m.moduleid, 'label')
 			
@@ -1087,7 +1137,7 @@ define class MBZ	as custom
 
 			if (len(m.page_name) >= 250) 
 				m.page_name = left(m.page_name,250) + "..."
-				&&  this.log('Truncating name of ' + m.moduleid + ' text to 75 characters. (Actual content not affected) ' + alltrim(str(len(m.page_name))) + ' chars in: ' + m.page_name)
+				&&  this.log('Truncating name of ' + m.moduleid + ' text to 250 characters. (Actual content not affected) ' + alltrim(str(len(m.page_name))) + ' chars in: ' + m.page_name)
 			endif
 			
 			m.page_content = m.content
